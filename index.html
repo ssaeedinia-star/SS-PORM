@@ -1,7 +1,7 @@
 <!doctype html><html lang='fa' dir='rtl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>SS-PORM V3.6</title><style>body{font-family:Tahoma,Arial,sans-serif;max-width:760px;margin:auto;padding:16px;background:#f5f5f5}h1{font-size:22px}.card{background:white;padding:16px;margin:12px 0;border-radius:14px}label{display:block;margin:10px 0 5px}input,select,textarea{box-sizing:border-box;width:100%;padding:11px;border:1px solid #bbb;border-radius:9px;font-size:16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.out{background:#eef2f3;padding:10px;border-radius:9px;margin-top:10px}button{padding:12px 16px;border:0;border-radius:10px;font-size:16px;cursor:pointer}.small{font-size:13px;color:#555}@media(max-width:520px){.row{grid-template-columns:1fr}}</style></head><body><h1>SS-PORM V3.6 — فرم اولیه ارزیابی جراحی ستون فقرات</h1><p class='small'>نسخه پژوهشی اولیه؛ خروجی پیش‌بینی تا زمان آموزش و اعتبارسنجی مدل غیرفعال است.</p>
 <form id='f'>
 <div class='card'><h2>مشخصات پایه</h2>
-<div class='row'><div><label>کد بیمار / کد مطالعه</label><input name='study_id'></div><button type='button' onclick='loadPatient()'>بازیابی پرونده بیمار</button><div id='loadStatus' class='small'></div><div><label>پزشک معالج</label><input name='treating_physician'></div></div>
+<div class='row'><div><label>کد بیمار / کد مطالعه</label><input name='study_id'></div><button type='button' onclick='loadPatient()'>بازیابی پرونده بیمار</button><div id='loadStatus' class='small'></div><button type='button' onclick='listPatients()'>لیست بیماران ذخیره‌شده</button><div id='patientList' class='small'></div><div><label>پزشک معالج</label><input name='treating_physician'></div></div>
 <label>نام و نام خانوادگی بیمار</label><input name='patient_name' autocomplete='name'>
 <div class='row'><div><label>شهر محل زندگی</label><input name='city'></div><div><label>شغل</label><input name='occupation'></div><div><label>سن</label><input type='number' name='age'></div><div><label>جنس</label><select name='sex'><option></option><option>مرد</option><option>زن</option></select></div><div><label>قد (cm)</label><input id='height' name='height_cm' type='number'></div><div><label>وزن (kg)</label><input id='weight' name='weight_kg' type='number'></div></div><div class='out'>BMI: <b id='bmi'>—</b></div>
 <p class='small'>برای فایل پژوهشی نهایی بهتر است نام بیمار جدا از دیتاست تحلیلی نگهداری شود و تحلیل با کد بیمار انجام شود.</p></div>
@@ -466,6 +466,25 @@ s.textContent='✓ پرونده بیمار با موفقیت بازیابی شد
 }catch(e){
 s.textContent='بازیابی انجام نشد: '+e.message;
 }
+}async function listPatients(){
+  const box=document.getElementById('patientList');
+  box.textContent='در حال دریافت لیست بیماران...';
+  try{
+    const r=await fetch('/api/patients');
+    const patients=await r.json();
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    if(!patients.length){
+      box.textContent='بیماری ذخیره نشده است.';
+      return;
+    }
+    box.innerHTML=patients.map(p =>
+      `<div style="padding:8px;border-bottom:1px solid #ddd;cursor:pointer" onclick="document.getElementById('f').elements['study_id'].value='${p.patient_code}';loadPatient();">
+        <b>${p.patient_code || ''}</b> ${p.patient_name ? ' — '+p.patient_name : ''}
+      </div>`
+    ).join('');
+  }catch(e){
+    box.textContent='دریافت لیست بیماران انجام نشد: '+e.message;
+  }
 }async function savePatient(){
 let f=document.getElementById('f'),o={};
 for(let el of f.elements){
