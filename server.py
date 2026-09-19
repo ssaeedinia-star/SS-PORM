@@ -1,0 +1,88 @@
+import os
+from flask import Flask, request, jsonify, send_from_directory
+from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+
+app = Flask(__name__, static_folder=".")
+CORS(app)
+
+database_url = os.environ.get("DATABASE_URL", "sqlite:///ss_porm.db")
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
+
+
+class Patient(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    patient_code = db.Column(db.String(100), unique=True, nullable=False)
+    data = db.Column(db.JSON, nullable=False)
+
+
+with app.app_context():
+    db.create_all()
+
+
+@app.route("/")
+def home():
+    return send_from_directory(".", "index.html")
+
+
+@app.route("/api/patients", methods=["POST"])
+def save_patient():
+    payload = request.get_json(silent=True)
+
+    if not payload:
+        return jsonify({"error": "No data received"}), 400
+
+    patient_code = payload.get("patient_code")
+
+    if not patient_code:
+        return jsonify({"error": "patient_code is required"}), 400
+
+    patient = Patient.query.filter_by(patient_code=patient_code).first()
+
+    if patient:
+        patient.data = payload
+    else:
+        patient = Patient(
+            patient_code=patient_code,
+            data=payload
+        )
+        db.session.add(patient)
+
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "patient_code": patient_code
+    })
+
+
+@app.route("/api/patients/<patient_code>", methods=["GET"])
+def get_patient(patient_code):
+
+    patient = Patient.query.filter_by(
+        patient_code=patient_code
+    ).first()
+
+    if not patient:
+        return jsonify({"error": "Patient not found"}), 404
+
+    return jsonify(patient.data)
+
+
+@app.route("/api/health", methods=["GET"])
+def health():
+    return jsonify({
+        "status": "ok",
+        "service": "SS-PORM"
+    })
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
