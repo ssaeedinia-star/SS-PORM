@@ -504,6 +504,17 @@ try{
 let r=await fetch('/api/patients',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
 let d=await r.json();
 if(!r.ok)throw new Error(d.error||('HTTP '+r.status));
+  let fileInputs=[...f.elements].filter(el=>el.type==='file');
+for(let input of fileInputs){
+  for(let file of input.files){
+    let fd=new FormData();
+    fd.append('patient_code',o.patient_code);
+    fd.append('file',file);
+    let ur=await fetch('/api/upload',{method:'POST',body:fd});
+    let ud=await ur.json();
+    if(!ur.ok)throw new Error(ud.error||('Upload HTTP '+ur.status));
+  }
+}
 s.textContent='✓ اطلاعات بیمار با موفقیت ذخیره شد.';
 }catch(e){s.textContent='ذخیره انجام نشد: '+e.message;}
 finally{b.disabled=false;}
