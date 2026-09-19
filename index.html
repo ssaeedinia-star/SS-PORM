@@ -501,7 +501,7 @@ s.style.display='block';
 if(!o.patient_code){s.textContent='ابتدا کد بیمار / کد مطالعه را وارد کنید.';return;}
 b.disabled=true;s.textContent='در حال ذخیره...';
 try{
-let r=await fetch('/api/patients',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
+let r=await fetch('https://ss-porm.onrender.com/api/patients',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
 let d=await r.json();
 if(!r.ok)throw new Error(d.error||('HTTP '+r.status));
   let fileInputs=[...f.elements].filter(el=>el.type==='file');
@@ -510,7 +510,7 @@ for(let input of fileInputs){
     let fd=new FormData();
     fd.append('patient_code',o.patient_code);
     fd.append('file',file);
-    let ur=await fetch('/api/upload',{method:'POST',body:fd});
+    let ur=await fetch('https://ss-porm.onrender.com/api/upload',{method:'POST',body:fd});
     let ud=await ur.json();
     if(!ur.ok)throw new Error(ud.error||('Upload HTTP '+ur.status));
   }
