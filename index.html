@@ -436,5 +436,30 @@
 <label>شرح وضعیت/Mechanical complication در 2 سال</label><textarea name='notes_24m' rows='2'></textarea>
 </div>
 <div class='card'><h2>خروجی مدل</h2><p>احتمال ODI MCID در 12 ماه: <b>پس از آموزش مدل</b></p><p>احتمال major complication در 90 روز: <b>پس از آموزش مدل</b></p><p>احتمال reoperation/mechanical complication: <b>پس از آموزش مدل</b></p></div>
-<div class='card'><button type='button' onclick='exportCSV()'>خروجی CSV همین بیمار</button></div></form>
-<script>function calc(){let h=+document.getElementById('height').value/100,w=+document.getElementById('weight').value;document.getElementById('bmi').textContent=h&&w?(w/(h*h)).toFixed(1):'—';let c=[...document.querySelectorAll('.mfi')].filter(x=>x.checked).length;document.getElementById('mfic').textContent=c;document.getElementById('mfi').textContent=(c/5).toFixed(2);let q=[...document.querySelectorAll('.modq')].filter(x=>x.value!=='');let n=q.length,sum=q.reduce((a,x)=>a+(+x.value),0),score=n?100*sum/(5*n):null;document.getElementById('modq_n').textContent=n;document.getElementById('modq_score').textContent=score===null?'—':score.toFixed(1);document.getElementById('odi_hidden').value=score===null?'':score.toFixed(1)}document.addEventListener('input',calc);function exportCSV(){let fd=new FormData(document.getElementById('f')),o={};for(let [k,v] of fd)o[k]=v;o.BMI=document.getElementById('bmi').textContent;o.mFI5=document.getElementById('mfi').textContent;let ks=Object.keys(o),esc=x=>'"'+String(x??'').replaceAll('"','""')+'"',csv=ks.map(esc).join(',')+'\n'+ks.map(k=>esc(o[k])).join(',');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='SS_PORM_patient.csv';a.click()}</script></body></html>
+<div class='card'><button type='button' onclick='exportCSV()'>خروجی CSV همین بیمار</button></div><div class='card'>
+<button type='button' id='saveBtn' onclick='savePatient()'>ذخیره بیمار در سرور</button>
+<div id='saveStatus' class='out' style='display:none'></div>
+</div></form>
+<script>function calc(){let h=+document.getElementById('height').value/100,w=+document.getElementById('weight').value;document.getElementById('bmi').textContent=h&&w?(w/(h*h)).toFixed(1):'—';let c=[...document.querySelectorAll('.mfi')].filter(x=>x.checked).length;document.getElementById('mfic').textContent=c;document.getElementById('mfi').textContent=(c/5).toFixed(2);let q=[...document.querySelectorAll('.modq')].filter(x=>x.value!=='');let n=q.length,sum=q.reduce((a,x)=>a+(+x.value),0),score=n?100*sum/(5*n):null;document.getElementById('modq_n').textContent=n;document.getElementById('modq_score').textContent=score===null?'—':score.toFixed(1);document.getElementById('odi_hidden').value=score===null?'':score.toFixed(1)}document.addEventListener('input',calc);async function savePatient(){
+let f=document.getElementById('f'),o={};
+for(let el of f.elements){
+if(!el.name||el.type==='file'||el.type==='button')continue;
+if(el.type==='checkbox')o[el.name]=el.checked;
+else if(el.type==='radio'){if(el.checked)o[el.name]=el.value;}
+else o[el.name]=el.value;
+}
+o.patient_code=(o.study_id||'').trim();
+o.BMI=document.getElementById('bmi').textContent;
+o.mFI5=document.getElementById('mfi').textContent;
+let s=document.getElementById('saveStatus'),b=document.getElementById('saveBtn');
+s.style.display='block';
+if(!o.patient_code){s.textContent='ابتدا کد بیمار / کد مطالعه را وارد کنید.';return;}
+b.disabled=true;s.textContent='در حال ذخیره...';
+try{
+let r=await fetch('/api/patients',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
+let d=await r.json();
+if(!r.ok)throw new Error(d.error||('HTTP '+r.status));
+s.textContent='✓ اطلاعات بیمار با موفقیت ذخیره شد.';
+}catch(e){s.textContent='ذخیره انجام نشد: '+e.message;}
+finally{b.disabled=false;}
+}function exportCSV(){let fd=new FormData(document.getElementById('f')),o={};for(let [k,v] of fd)o[k]=v;o.BMI=document.getElementById('bmi').textContent;o.mFI5=document.getElementById('mfi').textContent;let ks=Object.keys(o),esc=x=>'"'+String(x??'').replaceAll('"','""')+'"',csv=ks.map(esc).join(',')+'\n'+ks.map(k=>esc(o[k])).join(',');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='SS_PORM_patient.csv';a.click()}</script></body></html>
