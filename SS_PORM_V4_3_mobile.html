@@ -1,0 +1,440 @@
+<!doctype html><html lang='fa' dir='rtl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>SS-PORM V3.6</title><style>body{font-family:Tahoma,Arial,sans-serif;max-width:760px;margin:auto;padding:16px;background:#f5f5f5}h1{font-size:22px}.card{background:white;padding:16px;margin:12px 0;border-radius:14px}label{display:block;margin:10px 0 5px}input,select,textarea{box-sizing:border-box;width:100%;padding:11px;border:1px solid #bbb;border-radius:9px;font-size:16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.out{background:#eef2f3;padding:10px;border-radius:9px;margin-top:10px}button{padding:12px 16px;border:0;border-radius:10px;font-size:16px;cursor:pointer}.small{font-size:13px;color:#555}@media(max-width:520px){.row{grid-template-columns:1fr}}</style></head><body><h1>SS-PORM V3.6 — فرم اولیه ارزیابی جراحی ستون فقرات</h1><p class='small'>نسخه پژوهشی اولیه؛ خروجی پیش‌بینی تا زمان آموزش و اعتبارسنجی مدل غیرفعال است.</p>
+<form id='f'>
+<div class='card'><h2>مشخصات پایه</h2>
+<div class='row'><div><label>کد بیمار / کد مطالعه</label><input name='study_id'></div><div><label>پزشک معالج</label><input name='treating_physician'></div></div>
+<label>نام و نام خانوادگی بیمار</label><input name='patient_name' autocomplete='name'>
+<div class='row'><div><label>شهر محل زندگی</label><input name='city'></div><div><label>شغل</label><input name='occupation'></div><div><label>سن</label><input type='number' name='age'></div><div><label>جنس</label><select name='sex'><option></option><option>مرد</option><option>زن</option></select></div><div><label>قد (cm)</label><input id='height' name='height_cm' type='number'></div><div><label>وزن (kg)</label><input id='weight' name='weight_kg' type='number'></div></div><div class='out'>BMI: <b id='bmi'>—</b></div>
+<p class='small'>برای فایل پژوهشی نهایی بهتر است نام بیمار جدا از دیتاست تحلیلی نگهداری شود و تحلیل با کد بیمار انجام شود.</p></div>
+<div class='card'><h2>بیماری‌های همراه و mFI-5</h2><label><input style='width:auto' type='checkbox' class='mfi' name='dm'> دیابت</label><label><input style='width:auto' type='checkbox' class='mfi' name='htn'> پرفشاری خون نیازمند دارو</label><label><input style='width:auto' type='checkbox' class='mfi' name='chf'> نارسایی قلبی CHF</label><label><input style='width:auto' type='checkbox' class='mfi' name='copd'> COPD</label><label><input style='width:auto' type='checkbox' class='mfi' name='dependent'> وابستگی عملکردی</label><label><input style='width:auto' type='checkbox' name='renal'> بیماری کلیوی</label><label><input style='width:auto' type='checkbox' name='osteoporosis'> استئوپروز</label><label><input style='width:auto' type='checkbox' name='steroid'> مصرف مزمن کورتون</label><div class='out'>mFI-5: <b id='mfi'>0.00</b> (<span id='mfic'>0</span>/5)</div></div>
+<div class='card'><h2>Frailty و ASA</h2><label>Clinical Frailty Scale (1–9)</label><select name='cfs'><option></option><option>1 — Very Fit</option><option>2 — Fit</option><option>3 — Managing Well</option><option>4 — Vulnerable</option><option>5 — Mildly Frail</option><option>6 — Moderately Frail</option><option>7 — Severely Frail</option><option>8 — Very Severely Frail</option><option>9 — Terminally Ill</option></select><label>ASA Physical Status — نزدیک‌ترین توصیف را انتخاب کنید</label><select name='asa'><option></option><option>ASA I — فرد سالم، بدون بیماری سیستمیک قابل توجه</option><option>ASA II — بیماری سیستمیک خفیف، بدون محدودیت عملکردی مهم</option><option>ASA III — بیماری سیستمیک شدید با محدودیت عملکردی قابل توجه، اما نه تهدید دائمی برای حیات</option><option>ASA IV — بیماری سیستمیک شدید که تهدید دائمی برای حیات محسوب می‌شود</option><option>ASA V — بیمار در آستانه مرگ که بدون عمل انتظار بقا ندارد</option><option>ASA VI — بیمار مرگ مغزی برای اهدای عضو</option></select><p class='small'>این توضیحات برای انتخاب سریع در فرم است. ASA یک طبقه‌بندی بالینی است و امتیاز ریاضی نیست؛ در موارد مرزی، طبقه نهایی توسط پزشک/بیهوشی تأیید شود.</p></div>
+<div class='card'><h2>وضعیت ستون فقرات</h2><label>تشخیص اصلی</label><select name='diagnosis'><option></option><option>Degenerative stenosis</option><option>Disc herniation</option><option>Spondylolisthesis</option><option>Adult spinal deformity</option><option>Adjacent segment disease</option><option>Pseudarthrosis</option><option>Failed back surgery / revision</option><option>Trauma</option><option>Tumor</option><option>Infection</option><option>Other</option></select><div class='row'><div><label>NRS کمردرد 0–10</label><input type='number' min='0' max='10' name='nrs_back'></div><div><label>NRS درد اندام 0–10</label><input type='number' min='0' max='10' name='nrs_leg'></div></div><label>سابقه جراحی ستون فقرات</label><select name='prev'><option>خیر</option><option>بله</option></select><label>سابقه Fusion</label><select name='prev_fusion'><option>خیر</option><option>بله</option></select></div>
+
+<div class='card'><h2>فعالیت فیزیکی و ورزش — پرسشنامه کوتاه</h2>
+<p class='small'>هدف این بخش ثبت الگوی معمول فعالیت بیمار در ماه اخیر است؛ برای تحلیل، پاسخ خام هر سؤال ذخیره می‌شود.</p>
+<label>در یک هفته معمول، چند روز حداقل 30 دقیقه فعالیت بدنی متوسط دارید؟ <span class='small'>(مثل پیاده‌روی تند، دوچرخه‌سواری آرام یا فعالیتی که ضربان و تنفس را بیشتر کند)</span></label><input type='number' min='0' max='7' name='pa_moderate_days'>
+<label>در یک هفته معمول، چند روز فعالیت شدید یا ورزش دارید؟ <span class='small'>(مثل دویدن، ورزش سنگین یا فعالیتی که باعث نفس‌نفس زدن شود)</span></label><input type='number' min='0' max='7' name='pa_vigorous_days'>
+<div class='row'><div><label>مدت متوسط هر جلسه فعالیت/ورزش (دقیقه)</label><input type='number' min='0' name='pa_minutes_session'></div><div><label>ساعات نشستن در یک روز معمول</label><input type='number' min='0' max='24' step='0.5' name='sitting_hours_day'></div></div>
+<label>نوع فعالیت یا ورزش معمول <span class='small'>(امکان انتخاب چند مورد)</span></label>
+<label><input style='width:auto' type='checkbox' name='activity_walking'> پیاده‌روی</label><label><input style='width:auto' type='checkbox' name='activity_aerobic'> ورزش هوازی/دویدن/دوچرخه</label><label><input style='width:auto' type='checkbox' name='activity_strength'> تمرین قدرتی/بدنسازی</label><label><input style='width:auto' type='checkbox' name='activity_swimming'> شنا</label><label><input style='width:auto' type='checkbox' name='activity_sport'> ورزش تفریحی/تیمی</label><label><input style='width:auto' type='checkbox' name='activity_none'> فعالیت ورزشی منظم ندارم</label>
+<label>فعالیت شغلی معمول</label><select name='occupational_activity'><option></option><option>عمدتاً نشسته</option><option>ایستادن/راه رفتن سبک</option><option>فعالیت بدنی متوسط</option><option>کار بدنی سنگین</option></select>
+<label>در 6 ماه اخیر، درد ستون فقرات چقدر فعالیت بدنی شما را کاهش داده است؟</label><select name='pain_activity_reduction'><option></option><option>اصلاً</option><option>کم</option><option>متوسط</option><option>زیاد</option><option>تقریباً فعالیت را متوقف کرده است</option></select>
+<label>قبل از شروع مشکل فعلی، ورزش منظم داشتید؟</label><select name='preillness_regular_exercise'><option></option><option>خیر</option><option>بله</option></select>
+</div>
+<div class='card'><h2>Persian Modified Oswestry Disability Questionnaire (MODQ)</h2><p class='small'>این ماژول بر اساس نسخه فارسی اعتبارسنجی‌شده MODQ در مطالعه Baradaran و همکاران طراحی شده است. برای حفظ متن ابزار اعتبارسنجی‌شده، متن گزینه‌ها را از Supplement رسمی مطالعه بخوانید و در هر بخش امتیاز متناظر ۰ تا ۵ را انتخاب کنید.</p><p><a href='https://pmc.ncbi.nlm.nih.gov/articles/instance/4843055/bin/asj-10-215-s001.pdf' target='_blank' rel='noopener'>باز کردن نسخه فارسی اعتبارسنجی‌شده MODQ</a></p><label>1. شدت درد</label><select class='modq' name='modq_1'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><label>2. مراقبت شخصی</label><select class='modq' name='modq_2'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><label>3. بلند کردن اجسام</label><select class='modq' name='modq_3'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><label>4. راه رفتن</label><select class='modq' name='modq_4'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><label>5. نشستن</label><select class='modq' name='modq_5'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><label>6. ایستادن</label><select class='modq' name='modq_6'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><label>7. خواب</label><select class='modq' name='modq_7'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><label>8. اشتغال / خانه‌داری</label><select class='modq' name='modq_8'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><label>9. زندگی اجتماعی</label><select class='modq' name='modq_9'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><label>10. سفر</label><select class='modq' name='modq_10'><option value=''></option><option value='0'>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select><div class='out'>MODQ/ODI: <b id='modq_score'>—</b> / 100 &nbsp; | &nbsp; بخش‌های پاسخ‌داده‌شده: <b id='modq_n'>0</b>/10</div><input type='hidden' name='odi' id='odi_hidden'><p class='small'>محاسبه: مجموع امتیاز بخش‌های پاسخ‌داده‌شده ÷ حداکثر امتیاز ممکن همان بخش‌ها × 100. در صورت تکمیل هر ۱۰ بخش، معادل مجموع × 2 است. امتیاز بالاتر نشان‌دهنده ناتوانی بیشتر است.</p></div>
+
+<div class='card'><h2>عملکرد روانی و انتظار بیمار از جراحی <span class='small'>Core</span></h2>
+<p class='small'>غربالگری کوتاه پژوهشی؛ جایگزین ارزیابی تخصصی روان‌پزشکی نیست. پاسخ‌ها بر اساس وضعیت ۲ هفته اخیر ثبت شوند.</p>
+<div class='row'>
+<div><label>خلق پایین / افسردگی</label><select name='psych_low_mood'><option></option><option>اصلاً</option><option>چند روز</option><option>بیش از نیمی از روزها</option><option>تقریباً هر روز</option></select></div>
+<div><label>کاهش علاقه یا لذت</label><select name='psych_anhedonia'><option></option><option>اصلاً</option><option>چند روز</option><option>بیش از نیمی از روزها</option><option>تقریباً هر روز</option></select></div>
+<div><label>اضطراب / نگرانی آزاردهنده</label><select name='psych_anxiety'><option></option><option>اصلاً</option><option>خفیف</option><option>متوسط</option><option>شدید</option></select></div>
+<div><label>اختلال خواب مرتبط با درد/نگرانی</label><select name='psych_sleep'><option></option><option>ندارد</option><option>خفیف</option><option>متوسط</option><option>شدید</option></select></div>
+</div>
+<div class='row'>
+<div><label>ترس از حرکت / آسیب مجدد</label><select name='fear_avoidance'><option></option><option>ندارد</option><option>خفیف</option><option>متوسط</option><option>شدید</option></select></div>
+<div><label>احساس کنترل بیمار بر بیماری</label><select name='self_efficacy'><option></option><option>خوب</option><option>متوسط</option><option>کم</option></select></div>
+<div><label>حمایت خانوادگی/اجتماعی</label><select name='social_support'><option></option><option>خوب</option><option>متوسط</option><option>کم</option></select></div>
+<div><label>مشکل روان‌پزشکی شناخته‌شده</label><select name='known_psych_history'><option></option><option>خیر</option><option>بله</option></select></div>
+</div>
+<h3>انتظارات از جراحی</h3>
+<div class='row'>
+<div><label>انتظار کاهش درد (%)</label><input type='number' min='0' max='100' name='expected_pain_reduction' placeholder='0–100'></div>
+<div><label>انتظار بهبود توانایی فعالیت (%)</label><input type='number' min='0' max='100' name='expected_function_improvement' placeholder='0–100'></div>
+<div><label>انتظار بازگشت به کار/فعالیت عادی</label><select name='expected_return_activity'><option></option><option>کامل</option><option>تا حد زیادی</option><option>نسبی</option><option>انتظار ندارم</option><option>قابل اعمال نیست</option></select></div>
+<div><label>انتظار کلی از نتیجه عمل</label><select name='overall_expectation'><option></option><option>بهبود بسیار زیاد</option><option>بهبود قابل توجه</option><option>بهبود متوسط</option><option>بهبود اندک</option><option>فقط جلوگیری از بدتر شدن</option></select></div>
+</div>
+<label>مهم‌ترین هدف بیمار از جراحی</label><select name='primary_patient_goal'><option></option><option>کاهش درد</option><option>بهبود راه رفتن</option><option>بهبود ضعف/عملکرد نورولوژیک</option><option>بازگشت به کار</option><option>بازگشت به ورزش</option><option>استقلال در فعالیت‌های روزمره</option><option>اصلاح دفورمیتی/وضعیت قامت</option><option>جلوگیری از پیشرفت بیماری</option><option>سایر</option></select>
+<h3>عملکرد جنسی و نقش آن در تصمیم به جراحی</h3>
+<p class='small'>این بخش به‌صورت محرمانه و با اختیار بیمار تکمیل شود. هدف، ثبت اهمیت عملکرد جنسی در تصمیم‌گیری و انتظار بیمار از جراحی است.</p>
+<div class='row'>
+<div><label>آیا اختلال در عملکرد جنسی در تصمیم بیمار برای انجام جراحی مؤثر بوده است؟</label>
+<select name='sexual_dysfunction_influenced_surgery'><option></option><option>خیر</option><option>بله</option><option>نامشخص / ترجیح می‌دهد پاسخ ندهد</option></select></div>
+<div><label>اگر بله، میزان اهمیت این موضوع در تصمیم به جراحی</label>
+<select name='sexual_function_decision_importance'><option></option><option>کم</option><option>متوسط</option><option>زیاد</option><option>بسیار زیاد / از اهداف اصلی جراحی</option></select></div>
+<div><label>آیا بیمار انتظار دارد عملکرد جنسی پس از جراحی بهبود پیدا کند؟</label>
+<select name='expected_sexual_function_improvement'><option></option><option>خیر</option><option>بله</option><option>مطمئن نیست</option><option>قابل اعمال نیست / ترجیح می‌دهد پاسخ ندهد</option></select></div>
+</div>
+<label>توضیح اختیاری درباره اختلال عملکرد جنسی یا انتظار بیمار</label>
+<textarea name='sexual_function_notes' rows='2' placeholder='اختیاری'></textarea>
+<label>شرح آزاد انتظار/هدف بیمار</label><textarea name='patient_expectation_notes' rows='2'></textarea>
+</div>
+<div class='card'><h2>معاینه نورولوژیک قبل از عمل — پزشک</h2>
+<p class='small'>معاینه پایه قبل از جراحی. قدرت عضلانی بر اساس MRC از 0 تا 5 ثبت شود. در صورت عدم ارتباط یک myotome با پاتولوژی بیمار، می‌توان آن را خالی گذاشت.</p>
+<h3>قدرت حرکتی — اندام فوقانی</h3>
+<div class='row'>
+<div><label>C5 — Shoulder abduction / Deltoid</label><select name='motor_c5'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+<div><label>C6 — Elbow flexion / Wrist extension</label><select name='motor_c6'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+<div><label>C7 — Elbow extension</label><select name='motor_c7'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+<div><label>C8 — Finger flexion</label><select name='motor_c8'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+<div><label>T1 — Finger abduction</label><select name='motor_t1'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+</div>
+<h3>قدرت حرکتی — اندام تحتانی</h3>
+<div class='row'>
+<div><label>L2 — Hip flexion</label><select name='motor_l2'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+<div><label>L3 — Knee extension</label><select name='motor_l3'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+<div><label>L4 — Ankle dorsiflexion</label><select name='motor_l4'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+<div><label>L5 — Great-toe extension</label><select name='motor_l5'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+<div><label>S1 — Plantar flexion</label><select name='motor_s1'><option></option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></div>
+</div>
+<label>سمت ضعف حرکتی غالب</label><select name='motor_deficit_side'><option></option><option>ندارد</option><option>راست</option><option>چپ</option><option>دوطرفه</option></select>
+<label>شرح ضعف حرکتی / عضلات درگیر</label><textarea name='motor_deficit_description' rows='2' placeholder='مثال: Right L5 weakness, EHL 3/5'></textarea>
+<h3>حس و علائم رادیکولار</h3>
+<div class='row'><div><label>Sensory deficit</label><select name='sensory_deficit'><option></option><option>ندارد</option><option>راست</option><option>چپ</option><option>دوطرفه</option></select></div><div><label>الگوی اختلال حس</label><select name='sensory_pattern'><option></option><option>Dermatomal</option><option>Non-dermatomal</option><option>Stocking / peripheral</option><option>نامشخص</option></select></div></div>
+<label>Dermatome / distribution اختلال حس</label><input name='sensory_distribution' placeholder='مثال: Right L5 dermatome'>
+<div class='row'><div><label>SLR</label><select name='slr'><option></option><option>منفی دوطرفه</option><option>مثبت راست</option><option>مثبت چپ</option><option>مثبت دوطرفه</option><option>قابل ارزیابی نیست</option></select></div><div><label>Femoral stretch test</label><select name='femoral_stretch'><option></option><option>منفی دوطرفه</option><option>مثبت راست</option><option>مثبت چپ</option><option>مثبت دوطرفه</option><option>قابل ارزیابی نیست</option></select></div></div>
+<h3>رفلکس‌ها</h3>
+<div class='row'><div><label>Biceps reflex</label><select name='reflex_biceps'><option></option><option>0</option><option>1+</option><option>2+ نرمال</option><option>3+</option><option>4+ / clonus</option></select></div><div><label>Triceps reflex</label><select name='reflex_triceps'><option></option><option>0</option><option>1+</option><option>2+ نرمال</option><option>3+</option><option>4+ / clonus</option></select></div><div><label>Patellar reflex</label><select name='reflex_patellar'><option></option><option>0</option><option>1+</option><option>2+ نرمال</option><option>3+</option><option>4+ / clonus</option></select></div><div><label>Achilles reflex</label><select name='reflex_achilles'><option></option><option>0</option><option>1+</option><option>2+ نرمال</option><option>3+</option><option>4+ / clonus</option></select></div></div>
+<h3>Myelopathy / UMN signs</h3>
+<div class='row'><div><label>Hoffmann</label><select name='hoffmann'><option></option><option>منفی</option><option>راست مثبت</option><option>چپ مثبت</option><option>دوطرفه مثبت</option></select></div><div><label>Babinski</label><select name='babinski'><option></option><option>منفی</option><option>راست مثبت</option><option>چپ مثبت</option><option>دوطرفه مثبت</option></select></div><div><label>Ankle clonus</label><select name='ankle_clonus'><option></option><option>ندارد</option><option>راست</option><option>چپ</option><option>دوطرفه</option></select></div><div><label>Hand dexterity impairment</label><select name='hand_dexterity'><option></option><option>خیر</option><option>بله</option></select></div></div>
+<h3>راه رفتن، تعادل و علائم هشدار</h3>
+<div class='row'><div><label>Gait</label><select name='gait'><option></option><option>طبیعی</option><option>Antalgic</option><option>Myelopathic / spastic</option><option>Steppage</option><option>Ataxic / unsteady</option><option>نیازمند وسیله کمکی</option><option>قادر به راه رفتن نیست</option></select></div><div><label>اختلال تعادل</label><select name='balance_deficit'><option></option><option>خیر</option><option>خفیف</option><option>متوسط</option><option>شدید</option></select></div></div>
+<div class='row'><div><label>تست رومبرگ (Romberg test)</label><select name='romberg_test'><option></option><option>منفی — تعادل با چشم بسته حفظ می‌شود</option><option>مثبت — با بستن چشم‌ها افزایش واضح نوسان یا از دست رفتن تعادل</option><option>قابل انجام نیست</option><option>انجام نشده</option></select></div><div><label>توضیح Romberg / تعادل</label><input name='romberg_notes' placeholder='مثال: Positive with falling to right'></div></div>
+<div class='row'><div><label>اختلال ادرار/مدفوع مرتبط با بیماری ستون فقرات</label><select name='bowel_bladder'><option></option><option>خیر</option><option>بله</option><option>نامشخص</option></select></div><div><label>Saddle anesthesia</label><select name='saddle_anesthesia'><option></option><option>خیر</option><option>بله</option><option>نامشخص</option></select></div></div>
+<label>جمع‌بندی deficit نورولوژیک</label><textarea name='neurologic_summary' rows='3' placeholder='مثال: Right L5 radiculopathy with EHL 3/5 and L5 sensory loss; no UMN signs or sphincter dysfunction.'></textarea>
+</div>
+
+<div class='card'><h2>پیوست تصاویر و فایل‌های رادیولوژیک بیمار</h2>
+<p class='small'>برای پروتوتایپ موبایل می‌توانید فایل‌های مرتبط با همین بیمار را انتخاب کنید. این انتخاب به‌تنهایی فایل را روی سرور ذخیره نمی‌کند؛ برای آرشیو دائمی و امن تصاویر/DICOM باید در نسخه کلینیکی backend امن و فضای ذخیره‌سازی اختصاصی پیاده‌سازی شود.</p>
+<div class='row'>
+<div><label>X-ray / Whole-spine / Dynamic</label><input type='file' name='attachment_xray' accept='image/*,.pdf' multiple></div>
+<div><label>CT</label><input type='file' name='attachment_ct' accept='image/*,.pdf,.dcm,application/dicom' multiple></div>
+<div><label>MRI</label><input type='file' name='attachment_mri' accept='image/*,.pdf,.dcm,application/dicom' multiple></div>
+<div><label>سایر فایل‌های تصویربرداری / گزارش‌ها</label><input type='file' name='attachment_other_imaging' accept='image/*,.pdf,.dcm,application/dicom' multiple></div>
+</div>
+<label>توضیحات پیوست‌های تصویربرداری</label>
+<textarea name='imaging_attachment_notes' rows='2' placeholder='مثال: MRI lumbar 1405/06/20؛ CT lumbar pre-op؛ standing whole-spine AP/Lateral'></textarea>
+<p class='small'>فرمت‌های قابل انتخاب: تصویر، PDF و DICOM (.dcm). برای مطالعات کامل CT/MRI بهتر است در نسخه نهایی امکان اتصال به PACS/DICOM یا بارگذاری Study کامل در نظر گرفته شود.</p>
+</div>
+<div class='card'><h2>یافته‌های رادیولوژیک و MRI — پزشک</h2>
+<p class='small'>این بخش قبل از برنامه جراحی تکمیل شود. موارد قابل انتخاب برای استانداردسازی دیتاست هستند و در انتها امکان شرح آزاد وجود دارد.</p>
+<h3>محل و سطح درگیری</h3>
+<div class='row'><div><label>ناحیه اصلی</label><select name='imaging_region'><option></option><option>Cervical</option><option>Cervicothoracic</option><option>Thoracic</option><option>Thoracolumbar</option><option>Lumbar</option><option>Lumbosacral</option><option>Multiregional</option></select></div><div><label>سطح/سطوح اصلی درگیر</label><input name='imaging_levels' placeholder='مثال: L3-4, L4-5'></div></div>
+<h3>MRI / CT — پاتولوژی دژنراتیو و فشاری</h3>
+<label><input style='width:auto' type='checkbox' name='img_disc_degeneration'> Disc degeneration / desiccation</label>
+<label><input style='width:auto' type='checkbox' name='img_disc_bulge'> Disc bulging</label>
+<label><input style='width:auto' type='checkbox' name='img_disc_herniation'> Disc herniation / extrusion / sequestration</label>
+<label><input style='width:auto' type='checkbox' name='img_central_stenosis'> Central canal stenosis</label>
+<label><input style='width:auto' type='checkbox' name='img_lateral_recess_stenosis'> Lateral recess stenosis</label>
+<label><input style='width:auto' type='checkbox' name='img_foraminal_stenosis'> Foraminal stenosis</label>
+<label><input style='width:auto' type='checkbox' name='img_facet_arthropathy'> Facet arthropathy / hypertrophy</label>
+<label><input style='width:auto' type='checkbox' name='img_ligamentum_flavum'> Ligamentum flavum hypertrophy</label>
+<label><input style='width:auto' type='checkbox' name='img_synovial_cyst'> Facet synovial cyst</label>
+<label><input style='width:auto' type='checkbox' name='img_olisthesis'> Spondylolisthesis / retrolisthesis</label>
+<div class='row'><div><label>Grade اسپوندیلولیستزیس (در صورت وجود)</label><select name='listhesis_grade'><option></option><option>I</option><option>II</option><option>III</option><option>IV</option><option>V / Spondyloptosis</option></select></div><div><label>Dynamic instability</label><select name='dynamic_instability'><option></option><option>خیر</option><option>بله</option><option>بررسی نشده</option></select></div></div>
+<h3>Deformity / Alignment</h3>
+<label><input style='width:auto' type='checkbox' name='img_coronal_deformity'> Coronal deformity / scoliosis</label>
+<label><input style='width:auto' type='checkbox' name='img_sagittal_deformity'> Sagittal deformity</label>
+<label><input style='width:auto' type='checkbox' name='img_combined_deformity'> Combined coronal + sagittal deformity</label>
+<label><input style='width:auto' type='checkbox' name='img_flatback'> Flat-back / loss of lumbar lordosis</label>
+<label><input style='width:auto' type='checkbox' name='img_hyperlordosis'> Hyperlordosis</label>
+<label><input style='width:auto' type='checkbox' name='img_kyphosis'> Kyphosis / junctional kyphosis</label>
+<div class='row'><div><label>Cobb angle (°)</label><input type='number' step='0.1' name='cobb_angle'></div><div><label>Curve apex</label><input name='curve_apex' placeholder='مثال: L2'></div></div>
+<h3>سایر یافته‌های مهم</h3>
+<label><input style='width:auto' type='checkbox' name='img_adjacent_segment'> Adjacent segment degeneration/disease</label>
+<label><input style='width:auto' type='checkbox' name='img_pseudarthrosis'> Pseudarthrosis / nonunion</label>
+<label><input style='width:auto' type='checkbox' name='img_implant_failure'> Implant loosening / breakage / migration</label>
+<label><input style='width:auto' type='checkbox' name='img_fracture'> Vertebral fracture / compression fracture</label>
+<label><input style='width:auto' type='checkbox' name='img_infection'> Spondylodiscitis / infection</label>
+<label><input style='width:auto' type='checkbox' name='img_tumor'> Tumor / metastatic lesion</label>
+<label><input style='width:auto' type='checkbox' name='img_ossification'> OPLL / other ligamentous ossification</label>
+<label><input style='width:auto' type='checkbox' name='img_cord_compression'> Spinal cord compression</label>
+<label><input style='width:auto' type='checkbox' name='img_myelomalacia'> Cord signal change / myelomalacia</label>
+<label><input style='width:auto' type='checkbox' name='img_nerve_root_compression'> Nerve-root compression</label>
+<label><input style='width:auto' type='checkbox' name='img_paraspinal_atrophy'> Paraspinal muscle atrophy / fatty infiltration</label>
+<div class='row'><div><label>شدت کلی stenosis</label><select name='stenosis_severity'><option></option><option>ندارد</option><option>خفیف</option><option>متوسط</option><option>شدید</option></select></div><div><label>Laterality غالب</label><select name='imaging_laterality'><option></option><option>Midline / central</option><option>Right</option><option>Left</option><option>Bilateral</option></select></div></div>
+<label>شرح MRI / CT</label><textarea name='mri_ct_description' rows='4' placeholder='مثال: Severe L4-5 central and bilateral lateral recess stenosis with grade I degenerative spondylolisthesis; L5-S1 bilateral foraminal stenosis.'></textarea>
+<label>شرح X-ray / Dynamic / Whole-spine imaging</label><textarea name='xray_description' rows='3' placeholder='مثال: Positive sagittal imbalance, PI-LL mismatch, degenerative lumbar scoliosis; dynamic instability at L4-5.'></textarea>
+
+<h3>ارزیابی سارکوپنیا و کیفیت عضلات در MRI</h3>
+<p class='small'>برای استانداردسازی، در صورت امکان ارزیابی روی برش Axial MRI و در سطح L3–L4 یا L4–L5 ثبت شود. Grade چربی عضلات پارااسپاینال به‌صورت کیفی ثبت می‌شود؛ در صورت امکان اندازه‌گیری کمی نیز وارد شود.</p>
+<div class='row'>
+  <div><label>سطح MRI مورد استفاده برای ارزیابی عضله</label>
+    <select name='sarc_mri_level'><option></option><option>L1–L2</option><option>L2–L3</option><option>L3–L4</option><option>L4–L5</option><option>L5–S1</option><option>سایر</option></select>
+  </div>
+  <div><label>عضله/گروه عضلانی ارزیابی‌شده</label>
+    <select name='sarc_muscle'><option></option><option>Multifidus</option><option>Erector spinae</option><option>Multifidus + Erector spinae</option><option>Psoas</option><option>همه موارد</option></select>
+  </div>
+</div>
+<label>Goutallier grade — fatty infiltration پارااسپاینال</label>
+<select name='paraspinal_goutallier'>
+<option></option>
+<option value='0'>Grade 0 — بدون چربی قابل مشاهده</option>
+<option value='1'>Grade 1 — خطوط/مقادیر اندک چربی در عضله</option>
+<option value='2'>Grade 2 — چربی قابل توجه، ولی مقدار عضله بیشتر از چربی است</option>
+<option value='3'>Grade 3 — مقدار عضله و چربی تقریباً برابر است</option>
+<option value='4'>Grade 4 — چربی بیشتر از بافت عضلانی است</option>
+</select>
+<div class='row'>
+  <div><label>آتروفی عضلات پارااسپاینال</label><select name='paraspinal_atrophy_grade'><option></option><option>ندارد</option><option>خفیف</option><option>متوسط</option><option>شدید</option></select></div>
+  <div><label>عدم تقارن عضلات پارااسپاینال</label><select name='paraspinal_asymmetry'><option></option><option>ندارد</option><option>راست کمتر</option><option>چپ کمتر</option><option>واضح ولی جهت نامشخص</option></select></div>
+</div>
+<h4>اندازه‌گیری کمی — در صورت موجود بودن</h4>
+<div class='row'>
+  <div><label>Paraspinal muscle CSA (cm²)</label><input type='number' step='0.01' name='paraspinal_csa'></div>
+  <div><label>Lean muscle CSA (cm²)</label><input type='number' step='0.01' name='paraspinal_lean_csa'></div>
+</div>
+<div class='row'>
+  <div><label>Fat infiltration / fat fraction (%)</label><input type='number' step='0.1' min='0' max='100' name='paraspinal_fat_fraction'></div>
+  <div><label>Psoas CSA (cm²) — اختیاری</label><input type='number' step='0.01' name='psoas_csa'></div>
+</div>
+<div class='row'>
+  <div><label>Psoas Muscle Index (cm²/m²) — در صورت محاسبه</label><input type='number' step='0.01' name='psoas_muscle_index'></div>
+  <div><label>برداشت کلی از کیفیت عضله</label><select name='muscle_quality_overall'><option></option><option>طبیعی</option><option>کاهش خفیف</option><option>کاهش متوسط</option><option>کاهش شدید</option></select></div>
+</div>
+
+<h3>Osteosarcopenia — Bone–Muscle Unit</h3>
+<p class='small'>این بخش داده‌های استخوان و عضله را کنار هم ثبت می‌کند. برچسب Osteosarcopenia فعلاً یک متغیر پژوهشی است و به‌عنوان تشخیص یا cutoff قطعی استفاده نمی‌شود؛ تعریف نهایی پس از تعیین معیارهای مطالعه و validation انجام خواهد شد.</p>
+<div class='row'>
+  <div><label>روش ارزیابی Bone Quality</label>
+    <select name='osteo_bone_method'><option></option><option>DXA</option><option>CT Hounsfield Unit</option><option>MRI Vertebral Bone Quality (VBQ)</option><option>DXA + CT-HU</option><option>DXA + VBQ</option><option>CT-HU + VBQ</option><option>چند روش</option><option>ارزیابی نشده</option></select>
+  </div>
+  <div><label>DXA category</label>
+    <select name='osteo_dxa_category'><option></option><option>Normal</option><option>Osteopenia</option><option>Osteoporosis</option><option>Severe / established osteoporosis</option><option>نامشخص / انجام نشده</option></select>
+  </div>
+</div>
+<div class='row'>
+  <div><label>کمترین T-score ثبت‌شده</label><input type='number' step='0.1' name='osteo_min_tscore'></div>
+  <div><label>میانگین/نماینده CT-HU مهره (در صورت موجود بودن)</label><input type='number' step='1' name='osteo_ct_hu'></div>
+</div>
+<div class='row'>
+  <div><label>MRI VBQ score — در صورت محاسبه</label><input type='number' step='0.01' name='osteo_vbq'></div>
+  <div><label>سطح Bone Quality مورد ارزیابی</label><input name='osteo_bone_level' placeholder='مثال: L1–L4 یا UIV'></div>
+</div>
+<div class='row'>
+  <div><label>شواهد کاهش Bone Quality</label><select name='low_bone_quality_flag'><option></option><option>خیر</option><option>بله</option><option>مرزی / نامشخص</option><option>ارزیابی نشده</option></select></div>
+  <div><label>شواهد کاهش Muscle Quality / Sarcopenia</label><select name='low_muscle_quality_flag'><option></option><option>خیر</option><option>بله</option><option>مرزی / نامشخص</option><option>ارزیابی نشده</option></select></div>
+</div>
+<div class='row'>
+  <div><label>Phenotype پژوهشی Bone–Muscle</label>
+    <select name='osteosarcopenia_phenotype'><option></option><option>Bone و Muscle هر دو طبیعی/بدون شواهد واضح کاهش کیفیت</option><option>Low bone quality فقط</option><option>Low muscle quality / sarcopenia فقط</option><option>هر دو: Osteosarcopenic phenotype</option><option>قابل طبقه‌بندی نیست</option></select>
+  </div>
+  <div><label>محل ارزیابی عضله در بیمار Long Fusion / ASD</label>
+    <select name='junctional_muscle_level'><option></option><option>L4</option><option>UIV</option><option>UIV+1</option><option>UIV+2</option><option>UIV تا UIV+2</option><option>چند سطح</option><option>قابل اعمال نیست</option></select>
+  </div>
+</div>
+<label>Bone–Muscle / Osteosarcopenia notes</label>
+<textarea name='osteosarcopenia_notes' rows='3' placeholder='مثال: osteopenia + Goutallier 3 multifidus/erector spinae at UIV; low CT-HU; consider as combined bone–muscle risk phenotype'></textarea>
+<label>توضیحات سارکوپنیا / عضلات پارااسپاینال</label>
+<textarea name='sarcopenia_mri_notes' rows='3' placeholder='مثال: marked multifidus fatty infiltration at L4–L5, Goutallier 3, bilateral with mild right predominance'></textarea>
+<label>جمع‌بندی تشخیص رادیولوژیک</label><textarea name='radiologic_impression' rows='3' placeholder='جمع‌بندی کوتاه یافته‌های مؤثر بر تصمیم جراحی'></textarea>
+</div>
+
+<div class='card'><h2>آزمایش‌ها و داروهای مهم <span class='small'>Core / Extended</span></h2>
+<div class='row'>
+<div><label>Hb (g/dL)</label><input type='number' step='0.1' name='lab_hb'></div>
+<div><label>Albumin (g/dL)</label><input type='number' step='0.1' name='lab_albumin'></div>
+<div><label>Creatinine (mg/dL)</label><input type='number' step='0.01' name='lab_creatinine'></div>
+<div><label>eGFR</label><input type='number' step='1' name='lab_egfr'></div>
+<div><label>HbA1c (%) — دیابتی‌ها</label><input type='number' step='0.1' name='lab_hba1c'></div>
+<div><label>Vitamin D (ng/mL)</label><input type='number' step='0.1' name='lab_vitd'></div>
+<div><label>CRP</label><input type='number' step='0.1' name='lab_crp'></div>
+<div><label>ESR</label><input type='number' step='1' name='lab_esr'></div>
+</div>
+<h3>داروها</h3>
+<div class='row'>
+<div><label>Anticoagulant</label><select name='med_anticoagulant'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Antiplatelet</label><select name='med_antiplatelet'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Chronic steroid</label><select name='med_steroid'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Opioid قبل از عمل</label><select name='med_opioid'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>مدت مصرف Opioid (ماه)</label><input type='number' min='0' name='opioid_months'></div>
+<div><label>دوز روزانه اپیوئید به معادل مورفین (MME mg/day) — در صورت محاسبه</label><input type='number' min='0' step='0.1' name='opioid_mme' placeholder='mg/day'></div>
+<div><label>داروی Osteoporosis</label><select name='osteoporosis_med'><option></option><option>ندارد</option><option>Bisphosphonate</option><option>Denosumab</option><option>Teriparatide / anabolic</option><option>سایر</option></select></div>
+<div><label>مدت مصرف داروی Osteoporosis (ماه)</label><input type='number' min='0' step='1' name='osteoporosis_med_months' placeholder='مثال: 12'></div>
+<div><label>نام دقیق دارو / رژیم درمانی Osteoporosis</label><input name='osteoporosis_med_detail' placeholder='مثال: Teriparatide 20 µg/day'></div>
+</div>
+</div>
+<div class='card'><h2>Patient-Reported Outcome بر اساس ناحیه</h2>
+<p class='small'>Lumbar: ODI/MODQ بخش قبلی. Cervical: NDI و در بیماران myelopathy، mJOA ثبت شود. برای حفظ اعتبار ابزار، متن کامل ابزارهای دارای مجوز در این نسخه بازتولید نشده است.</p>
+<div class='row'>
+<div><label>ناحیه اصلی برای PROM</label><select name='prom_region'><option></option><option>Lumbar / Lumbosacral</option><option>Cervical</option><option>Thoracic</option><option>Deformity / Multiregional</option></select></div>
+<div><label>NDI baseline (0–100)</label><input type='number' min='0' max='100' step='1' name='ndi_baseline'></div>
+<div><label>mJOA baseline (0–18)</label><input type='number' min='0' max='18' step='1' name='mjoa_baseline'></div>
+</div>
+</div>
+<div class='card'><h2>برنامه جراحی — پزشک</h2>
+<label>نوع/شرح کلی عمل</label><input name='procedure' placeholder='مثال: L2–S1 decompression + fusion'>
+<div class='row'><div><label>تعداد کل سطوح جراحی</label><input type='number' min='0' name='levels'></div><div><label>Revision</label><select name='revision'><option>خیر</option><option>بله</option></select></div></div>
+<h3>در صورت Revision — شرح جراحی/جراحی‌های قبلی</h3>
+<div class='row'>
+<div><label>تعداد جراحی‌های قبلی ستون فقرات</label><input type='number' min='0' name='prior_spine_surgery_count' placeholder='0'></div>
+<div><label>تاریخ/فاصله از آخرین جراحی</label><input name='prior_surgery_interval' placeholder='مثال: 2 سال قبل'></div>
+</div>
+<div class='row'>
+<div><label>ناحیه و سطوح جراحی قبلی</label><input name='prior_surgery_levels' placeholder='مثال: L3–S1'></div>
+<div><label>نوع جراحی قبلی</label><select name='prior_surgery_type'><option></option><option>Decompression only</option><option>Discectomy</option><option>Anterior cervical fusion</option><option>Posterior fusion/instrumentation</option><option>Interbody fusion</option><option>Deformity correction / long fusion</option><option>Combined anterior + posterior</option><option>سایر / چند نوع</option></select></div>
+</div>
+<label>شرح جراحی/جراحی‌های قبلی</label><textarea name='prior_surgery_description' rows='3' placeholder='مثال: L3–S1 posterior instrumentation + L4–5 TLIF; previous L4 laminectomy'></textarea>
+<label>علت اصلی Revision</label><select name='revision_indication'><option></option><option>Adjacent segment disease</option><option>Pseudarthrosis / nonunion</option><option>Implant loosening / breakage</option><option>Recurrent/residual stenosis</option><option>Recurrent disc herniation</option><option>Progressive deformity / sagittal imbalance</option><option>PJK / PJF</option><option>Infection</option><option>Neurologic deterioration</option><option>Persistent pain / failed back surgery</option><option>سایر / چند علت</option></select>
+<label>Pelvic fixation</label><select name='pelvic'><option>خیر</option><option>بله</option></select>
+<h3>Fusion / Instrumentation</h3>
+<div class='row'><div><label>Posterior instrumentation — تعداد سطوح</label><input type='number' min='0' name='posterior_instrumentation_levels' placeholder='0'></div><div><label>Fusion — تعداد سطوح</label><input type='number' min='0' name='fusion_levels' placeholder='0'></div><div><label>UIV</label><input name='uiv' placeholder='مثال: T10'></div><div><label>LIV</label><input name='liv' placeholder='مثال: S1 / Ilium'></div></div>
+<h3>Anterior Cervical Surgery</h3>
+<p class='small'>برای جراحی‌های قدامی گردن، تعداد سطوح هر جزء را جداگانه وارد کنید. در قسمت سطوح می‌توان محل دقیق را نیز ثبت کرد.</p>
+<div class='row'>
+<div><label>Anterior cervical discectomy (ACD/ACDF) — تعداد سطوح دیسککتومی</label><input type='number' min='0' name='acdf_discectomy_levels' placeholder='0'></div>
+<div><label>سطوح Discectomy قدامی گردن</label><input name='acdf_discectomy_segments' placeholder='مثال: C4–5, C5–6'></div>
+<div><label>Anterior cervical corpectomy (ACCF) — تعداد مهره‌های Corpectomy</label><input type='number' min='0' name='accf_corpectomy_count' placeholder='0'></div>
+<div><label>سطح/سطوح Corpectomy</label><input name='accf_corpectomy_levels' placeholder='مثال: C5'></div>
+</div>
+<div class='row'>
+<div><label>Anterior cervical fusion — تعداد سطوح Fusion</label><input type='number' min='0' name='anterior_cervical_fusion_levels' placeholder='0'></div>
+<div><label>سطوح Fusion قدامی گردن</label><input name='anterior_cervical_fusion_segments' placeholder='مثال: C4–C7'></div>
+<div><label>Anterior plate fixation</label><select name='anterior_cervical_plate'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>نوع Reconstruction</label><select name='cervical_reconstruction'><option></option><option>Interbody cage</option><option>Structural graft</option><option>Corpectomy cage / mesh</option><option>Cage + plate</option><option>سایر</option></select></div>
+</div>
+<div class='row'>
+<div><label>Cervical disc arthroplasty — تعداد سطوح</label><input type='number' min='0' name='cervical_arthroplasty_levels' placeholder='0'></div>
+<div><label>Hybrid construct (fusion + arthroplasty)</label><select name='cervical_hybrid'><option></option><option>خیر</option><option>بله</option></select></div>
+</div>
+<label>توضیحات جراحی قدامی گردن</label><textarea name='anterior_cervical_notes' rows='2' placeholder='مثال: C4–5 and C5–6 ACDF with plate; C6 corpectomy with C5–7 fusion'></textarea>
+
+<h3>Posterior Cervical Surgery</h3>
+<p class='small'>برای جراحی‌های خلفی گردن، تعداد سطوح و در صورت امکان level دقیق هر تکنیک را جداگانه ثبت کنید.</p>
+<div class='row'>
+  <div><label>Cervical laminectomy — تعداد سطوح</label><input type='number' min='0' name='cervical_laminectomy_levels' placeholder='0'></div>
+  <div><label>سطوح Laminectomy</label><input name='cervical_laminectomy_segments' placeholder='مثال: C3–C6'></div>
+  <div><label>Cervical laminoplasty — تعداد سطوح</label><input type='number' min='0' name='cervical_laminoplasty_levels' placeholder='0'></div>
+  <div><label>سطوح Laminoplasty</label><input name='cervical_laminoplasty_segments' placeholder='مثال: C3–C7'></div>
+</div>
+<div class='row'>
+  <div><label>Posterior cervical fusion — تعداد سطوح</label><input type='number' min='0' name='posterior_cervical_fusion_levels' placeholder='0'></div>
+  <div><label>سطوح Fusion خلفی گردن</label><input name='posterior_cervical_fusion_segments' placeholder='مثال: C2–T2'></div>
+  <div><label>Posterior cervical instrumentation — تعداد سطوح</label><input type='number' min='0' name='posterior_cervical_instrumentation_levels' placeholder='0'></div>
+  <div><label>سطوح Instrumentation</label><input name='posterior_cervical_instrumentation_segments' placeholder='مثال: C2–T1'></div>
+</div>
+<div class='row'>
+  <div><label>Posterior cervical foraminotomy — تعداد سطوح</label><input type='number' min='0' name='posterior_cervical_foraminotomy_levels' placeholder='0'></div>
+  <div><label>سطوح/سمت Foraminotomy</label><input name='posterior_cervical_foraminotomy_segments' placeholder='مثال: Right C5–6, Left C6–7'></div>
+  <div><label>Posterior cervical facetectomy — تعداد سطوح</label><input type='number' min='0' name='posterior_cervical_facetectomy_levels' placeholder='0'></div>
+  <div><label>سطوح Facetectomy</label><input name='posterior_cervical_facetectomy_segments' placeholder='مثال: C4–5, C5–6'></div>
+</div>
+<div class='row'>
+  <div><label>نوع Fixation خلفی گردن</label>
+    <select name='posterior_cervical_fixation_type'>
+      <option></option>
+      <option>Lateral mass screws</option>
+      <option>Pedicle screws</option>
+      <option>Pars screws</option>
+      <option>Translaminar screws</option>
+      <option>Combined / hybrid fixation</option>
+      <option>سایر</option>
+    </select>
+  </div>
+  <div><label>Crossing cervicothoracic junction</label>
+    <select name='cross_cervicothoracic_junction'><option></option><option>خیر</option><option>بله</option></select>
+  </div>
+  <div><label>UIV گردنی/خلفی</label><input name='posterior_cervical_uiv' placeholder='مثال: C2'></div>
+  <div><label>LIV گردنی/خلفی</label><input name='posterior_cervical_liv' placeholder='مثال: T2'></div>
+</div>
+<label>توضیحات جراحی خلفی گردن</label>
+<textarea name='posterior_cervical_notes' rows='2' placeholder='مثال: C3–6 laminectomy + C2–T2 posterior instrumentation/fusion with bilateral C5–6 foraminotomy'></textarea>
+<h3>Interbody</h3><p class='small'>تعداد سطوح هر روش را جداگانه وارد کنید.</p>
+<div class='row'><div><label>PLIF — تعداد سطوح</label><input type='number' min='0' name='plif_levels' placeholder='0'></div><div><label>TLIF — تعداد سطوح</label><input type='number' min='0' name='tlif_levels' placeholder='0'></div><div><label>ALIF — تعداد سطوح</label><input type='number' min='0' name='alif_levels' placeholder='0'></div><div><label>OLIF — تعداد سطوح</label><input type='number' min='0' name='olif_levels' placeholder='0'></div><div><label>LLIF / XLIF — تعداد سطوح</label><input type='number' min='0' name='llif_levels' placeholder='0'></div></div>
+<h3>Decompression / Osteotomy</h3>
+<p class='small'>برای هر تکنیک، در صورت انجام تعداد سطوح را وارد کنید؛ صفر یا خالی یعنی انجام نمی‌شود.</p>
+<div class='row'>
+<div><label>Decompression-only — تعداد سطوح</label><input type='number' min='0' name='decompression_only_levels' placeholder='0'></div>
+<div><label>PSO — تعداد سطوح</label><input type='number' min='0' name='pso_levels' placeholder='0'></div>
+<div><label>SPO — تعداد سطوح</label><input type='number' min='0' name='spo_levels' placeholder='0'></div>
+<div><label>Laminofacetectomy — تعداد سطوح</label><input type='number' min='0' name='laminofacetectomy_levels' placeholder='0'></div>
+<div><label>Discectomy — تعداد سطوح</label><input type='number' min='0' name='discectomy_levels' placeholder='0'></div>
+<div><label>Fenestration — تعداد سطوح</label><input type='number' min='0' name='fenestration_levels' placeholder='0'></div>
+</div>
+<label>توضیحات تکمیلی تکنیک/سطوح</label><textarea name='procedure_detail' rows='2' placeholder='مثال: PSO at L3; SPO at L1–2 and L2–3'></textarea>
+</div>
+<div class='card'><h2>استخوان و Alignment</h2><div class='row'><div><label>DEXA T-score</label><input type='number' step='0.1' name='tscore'></div><div><label>CT HU</label><input type='number' name='hu'></div><div><label>PI</label><input type='number' name='pi'></div><div><label>PT</label><input type='number' name='pt'></div><div><label>LL</label><input type='number' name='ll'></div><div><label>PI–LL</label><input type='number' name='pill'></div><div><label>SVA (mm)</label><input type='number' name='sva'></div><div><label>T1PA</label><input type='number' name='t1pa'></div></div></div>
+
+<div class='card'><h2>اطلاعات واقعی عمل و عوارض Post-op</h2>
+<p class='small'>این متغیرها برای مدل‌های postoperative ثبت می‌شوند و وارد مدل purely preoperative نخواهند شد.</p>
+<div class='row'>
+<div><label>Actual procedure</label><textarea name='actual_procedure' rows='2'></textarea></div>
+<div><label>Operative time (min)</label><input type='number' min='0' name='operative_time'></div>
+<div><label>EBL (mL)</label><input type='number' min='0' name='ebl'></div>
+<div><label>Transfusion (units)</label><input type='number' min='0' name='transfusion_units'></div>
+</div>
+<div class='row'>
+<div><label>Incidental durotomy</label><select name='comp_durotomy'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Neuromonitoring change</label><select name='comp_neuromonitoring'><option></option><option>خیر</option><option>بله</option><option>استفاده نشد</option></select></div>
+<div><label>Intraoperative complication</label><select name='comp_intraop'><option></option><option>خیر</option><option>بله</option></select></div>
+</div>
+<h3>عوارض تا 90 روز</h3>
+<div class='row'>
+<div><label>New neurologic deficit</label><select name='comp_neuro'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>SSI / wound infection</label><select name='comp_ssi'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>CSF leak</label><select name='comp_csf'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Hematoma</label><select name='comp_hematoma'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>DVT / PE</label><select name='comp_vte'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Cardiac complication</label><select name='comp_cardiac'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Pulmonary complication</label><select name='comp_pulmonary'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Renal complication</label><select name='comp_renal'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>UTI</label><select name='comp_uti'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Delirium</label><select name='comp_delirium'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Readmission ≤90d</label><select name='readmission_90d'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Reoperation ≤90d</label><select name='reoperation_90d'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Mortality ≤90d</label><select name='mortality_90d'><option></option><option>خیر</option><option>بله</option></select></div>
+</div>
+<label>شرح عارضه و زمان وقوع</label><textarea name='complication_description' rows='3' placeholder='نوع عارضه، postoperative day/date، درمان و outcome'></textarea>
+<h3>Mechanical / Fusion outcomes — Long-term</h3>
+<div class='row'>
+<div><label>PJK</label><select name='outcome_pjk'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>PJF</label><select name='outcome_pjf'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Pseudarthrosis</label><select name='outcome_pseudarthrosis'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Rod failure</label><select name='outcome_rod_failure'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Screw loosening/failure</label><select name='outcome_screw_failure'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Cage subsidence/migration</label><select name='outcome_cage_failure'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Adjacent segment disease</label><select name='outcome_asd'><option></option><option>خیر</option><option>بله</option></select></div>
+<div><label>Revision surgery</label><select name='outcome_revision'><option></option><option>خیر</option><option>بله</option></select></div>
+</div>
+<label>زمان/شرح Mechanical complication یا Revision</label><textarea name='mechanical_outcome_notes' rows='3'></textarea>
+</div>
+<div class='card'><h2>پیگیری‌های استاندارد</h2>
+<p class='small'>پیگیری‌ها به‌صورت جداگانه ثبت می‌شوند تا تغییرات درد، عملکرد و عوارض در طول زمان قابل تحلیل باشد.</p>
+
+<h3>پیگیری 3 ماه</h3>
+<div class='row'>
+<div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_3m'></div>
+<div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_3m'></div>
+<div><label>mJOA (0–18) — Myelopathy</label><input type='number' min='0' max='18' name='mjoa_3m'></div>
+<div><label>NRS درد کمر/گردن (0–10)</label><input type='number' min='0' max='10' name='axial_pain_3m'></div>
+<div><label>NRS درد اندام (0–10)</label><input type='number' min='0' max='10' name='limb_pain_3m'></div>
+<div><label>رضایت بیمار</label><select name='satisfaction_3m'><option></option><option>بسیار راضی</option><option>راضی</option><option>متوسط</option><option>ناراضی</option><option>بسیار ناراضی</option></select></div>
+</div>
+
+<h3>پیگیری 6 ماه</h3>
+<div class='row'>
+<div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_6m'></div>
+<div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_6m'></div>
+<div><label>mJOA (0–18) — Myelopathy</label><input type='number' min='0' max='18' name='mjoa_6m'></div>
+<div><label>NRS درد کمر/گردن (0–10)</label><input type='number' min='0' max='10' name='axial_pain_6m'></div>
+<div><label>NRS درد اندام (0–10)</label><input type='number' min='0' max='10' name='limb_pain_6m'></div>
+<div><label>رضایت بیمار</label><select name='satisfaction_6m'><option></option><option>بسیار راضی</option><option>راضی</option><option>متوسط</option><option>ناراضی</option><option>بسیار ناراضی</option></select></div>
+<div><label>بازگشت به کار/فعالیت معمول</label><select name='return_activity_6m'><option></option><option>کامل</option><option>نسبی</option><option>خیر</option><option>قابل اعمال نیست</option></select></div>
+<div><label>Reoperation تا 6 ماه</label><select name='reop_6m'><option></option><option>خیر</option><option>بله</option></select></div>
+</div>
+<label>شرح وضعیت/عارضه در 6 ماه</label><textarea name='notes_6m' rows='2'></textarea>
+
+<h3>پیگیری 12 ماه (1 سال)</h3>
+<div class='row'>
+<div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_12m'></div>
+<div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_12m'></div>
+<div><label>mJOA (0–18) — Myelopathy</label><input type='number' min='0' max='18' name='mjoa_12m'></div>
+<div><label>NRS درد کمر/گردن (0–10)</label><input type='number' min='0' max='10' name='axial_pain_12m'></div>
+<div><label>NRS درد اندام (0–10)</label><input type='number' min='0' max='10' name='limb_pain_12m'></div>
+<div><label>رضایت بیمار</label><select name='satisfaction_12m'><option></option><option>بسیار راضی</option><option>راضی</option><option>متوسط</option><option>ناراضی</option><option>بسیار ناراضی</option></select></div>
+<div><label>بازگشت به کار/فعالیت معمول</label><select name='return_activity_12m'><option></option><option>کامل</option><option>نسبی</option><option>خیر</option><option>قابل اعمال نیست</option></select></div>
+<div><label>Reoperation تا 1 سال</label><select name='reop_12m'><option></option><option>خیر</option><option>بله</option></select></div>
+</div>
+<label>شرح وضعیت/عارضه در 1 سال</label><textarea name='notes_12m' rows='2'></textarea>
+
+<h3>پیگیری 24 ماه</h3>
+<div class='row'>
+<div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_24m'></div>
+<div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_24m'></div>
+<div><label>mJOA (0–18) — Myelopathy</label><input type='number' min='0' max='18' name='mjoa_24m'></div>
+<div><label>Reoperation تا 2 سال</label><select name='reop_24m'><option></option><option>خیر</option><option>بله</option></select></div>
+</div>
+<label>شرح وضعیت/Mechanical complication در 2 سال</label><textarea name='notes_24m' rows='2'></textarea>
+</div>
+<div class='card'><h2>خروجی مدل</h2><p>احتمال ODI MCID در 12 ماه: <b>پس از آموزش مدل</b></p><p>احتمال major complication در 90 روز: <b>پس از آموزش مدل</b></p><p>احتمال reoperation/mechanical complication: <b>پس از آموزش مدل</b></p></div>
+<div class='card'><button type='button' onclick='exportCSV()'>خروجی CSV همین بیمار</button></div></form>
+<script>function calc(){let h=+document.getElementById('height').value/100,w=+document.getElementById('weight').value;document.getElementById('bmi').textContent=h&&w?(w/(h*h)).toFixed(1):'—';let c=[...document.querySelectorAll('.mfi')].filter(x=>x.checked).length;document.getElementById('mfic').textContent=c;document.getElementById('mfi').textContent=(c/5).toFixed(2);let q=[...document.querySelectorAll('.modq')].filter(x=>x.value!=='');let n=q.length,sum=q.reduce((a,x)=>a+(+x.value),0),score=n?100*sum/(5*n):null;document.getElementById('modq_n').textContent=n;document.getElementById('modq_score').textContent=score===null?'—':score.toFixed(1);document.getElementById('odi_hidden').value=score===null?'':score.toFixed(1)}document.addEventListener('input',calc);function exportCSV(){let fd=new FormData(document.getElementById('f')),o={};for(let [k,v] of fd)o[k]=v;o.BMI=document.getElementById('bmi').textContent;o.mFI5=document.getElementById('mfi').textContent;let ks=Object.keys(o),esc=x=>'"'+String(x??'').replaceAll('"','""')+'"',csv=ks.map(esc).join(',')+'\n'+ks.map(k=>esc(o[k])).join(',');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='SS_PORM_patient.csv';a.click()}</script></body></html>
