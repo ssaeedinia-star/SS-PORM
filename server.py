@@ -74,7 +74,22 @@ def get_patient(patient_code):
 
     return jsonify(patient.data)
 
+@app.route("/api/patients", methods=["GET"])
+def list_patients():
+    patients = Patient.query.order_by(Patient.id.desc()).all()
 
+    result = []
+    for patient in patients:
+        data = patient.data or {}
+        result.append({
+            "patient_code": patient.patient_code,
+            "patient_name": data.get("patient_name", ""),
+            "age": data.get("age", ""),
+            "sex": data.get("sex", ""),
+            "diagnosis": data.get("diagnosis", "")
+        })
+
+    return jsonify(result)
 @app.route("/api/health", methods=["GET"])
 def health():
     return jsonify({
