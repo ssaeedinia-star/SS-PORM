@@ -1,4 +1,5 @@
 import os
+from werkzeug.utils import secure_filename
 from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -24,7 +25,9 @@ class Patient(db.Model):
 
 with app.app_context():
     db.create_all()
-
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 @app.route("/")
 def home():
@@ -98,6 +101,28 @@ def health():
     })
 
 
+@app.route("/api/upload/<patient_code>", methods=["POST"])
+def upload_file(patient_code):
+    if "file" not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+
+    file = request.files["file"]
+    if not file or not file.filename:
+        return jsonify({"error": "No file selected"}), 400
+
+    patient_folder = os.path.join(
+        app.config["UPLOAD_FOLDER"],
+        secure_filename(patient_code)
+    )
+    os.makedirs(patient_folder, exist_ok=True)
+
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(patient_folder, filename))
+
+    return jsonify({
+        "status": "ok",
+        "filename": filename
+ })
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
