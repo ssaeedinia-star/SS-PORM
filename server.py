@@ -123,6 +123,22 @@ def upload_file(patient_code):
         "status": "ok",
         "filename": filename
  })
+    @app.route("/api/files/<patient_code>", methods=["GET"])
+def list_patient_files(patient_code):
+    patient_folder = os.path.join(
+        app.config["UPLOAD_FOLDER"],
+        secure_filename(patient_code)
+    )
+
+    if not os.path.isdir(patient_folder):
+        return jsonify({"patient_code": patient_code, "files": []})
+
+    files = os.listdir(patient_folder)
+
+    return jsonify({
+        "patient_code": patient_code,
+        "files": files
+    })
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
