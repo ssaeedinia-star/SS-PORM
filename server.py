@@ -1,7 +1,7 @@
 import os
 import boto3
 from werkzeug.utils import secure_filename
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -160,14 +160,20 @@ def list_patient_files(patient_code):
     })
 @app.route("/api/files/<patient_code>/<filename>", methods=["GET"])
 def get_patient_file(patient_code, filename):
-    patient_folder = os.path.join(
-        app.config["UPLOAD_FOLDER"],
-        secure_filename(patient_code)
+    patient_code_safe = secure_filename(patient_code)
+    filename_safe = secure_filename(filename)
+    object_key = f"{patient_code_safe}/{filename_safe}"
+
+    url = s3.generate_presigned_url(
+        "get_object",
+        Params={
+            "Bucket": LIARA_BUCKET_NAME,
+            "Key": object_key
+        },
+        ExpiresIn=3600
     )
-    return send_from_directory(
-        patient_folder,
-        secure_filename(filename)
-    )
+
+    return redirect(url)
 
 
 
