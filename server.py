@@ -121,16 +121,17 @@ def upload_file(patient_code):
     file = request.files["file"]
     if not file or not file.filename:
         return jsonify({"error": "No file selected"}), 400
-    patient_code_safe = secure_filename(patient_code)
-filename = secure_filename(file.filename)
-object_key = f"{patient_code_safe}/{filename}"
+        patient_code_safe = secure_filename(patient_code)
+    filename = secure_filename(file.filename)
+    object_key = f"{patient_code_safe}/{filename}"
 
     s3.upload_fileobj(
         file,
         LIARA_BUCKET_NAME,
         object_key,
-        ExtraArgs={"ContentType":
-        file.content_type or "application/octet-stream"}
+        ExtraArgs={
+            "ContentType": file.content_type or "application/octet-stream"
+        }
     )
 
     return jsonify({
