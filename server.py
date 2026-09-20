@@ -132,7 +132,7 @@ s3.upload_fileobj(
     ExtraArgs={"ContentType": file.content_type or "application/octet-stream"}
 )
 
-    return jsonify({
+return jsonify({
         "status": "ok",
         "filename": filename
  })
