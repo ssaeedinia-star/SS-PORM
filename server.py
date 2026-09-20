@@ -123,7 +123,7 @@ def upload_file(patient_code):
         "status": "ok",
         "filename": filename
  })
-  @app.route("/api/files/<patient_code>", methods=["GET"])
+@app.route("/api/files/<patient_code>", methods=["GET"])
 def list_patient_files(patient_code):
     patient_folder = os.path.join(
         app.config["UPLOAD_FOLDER"],
