@@ -125,17 +125,18 @@ def upload_file(patient_code):
 filename = secure_filename(file.filename)
 object_key = f"{patient_code_safe}/{filename}"
 
-s3.upload_fileobj(
-    file,
-    LIARA_BUCKET_NAME,
-    object_key,
-    ExtraArgs={"ContentType": file.content_type or "application/octet-stream"}
-)
+    s3.upload_fileobj(
+        file,
+        LIARA_BUCKET_NAME,
+        object_key,
+        ExtraArgs={"ContentType":
+        file.content_type or "application/octet-stream"}
+    )
 
-return jsonify({
+    return jsonify({
         "status": "ok",
         "filename": filename
- })
+    })
 @app.route("/api/files/<patient_code>", methods=["GET"])
 def list_patient_files(patient_code):
     patient_folder = os.path.join(
