@@ -139,6 +139,20 @@ def list_patient_files(patient_code):
         "patient_code": patient_code,
         "files": files
     })
+@app.route("/api/files/<patient_code>/<filename>", methods=["GET"])
+def get_patient_file(patient_code, filename):
+    patient_folder = os.path.join(
+        app.config["UPLOAD_FOLDER"],
+        secure_filename(patient_code)
+    )
+    return send_from_directory(
+        patient_folder,
+        secure_filename(filename)
+    )
+
+
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
