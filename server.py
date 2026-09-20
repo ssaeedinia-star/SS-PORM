@@ -1,4 +1,5 @@
 import os
+import boto3
 from werkzeug.utils import secure_filename
 from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
@@ -6,7 +7,18 @@ from flask_cors import CORS
 
 app = Flask(__name__, static_folder=".")
 CORS(app)
+# Liara Object Storage
+LIARA_ENDPOINT_URL = os.environ.get("LIARA_ENDPOINT_URL")
+LIARA_ACCESS_KEY = os.environ.get("LIARA_ACCESS_KEY")
+LIARA_SECRET_KEY = os.environ.get("LIARA_SECRET_KEY")
+LIARA_BUCKET_NAME = os.environ.get("LIARA_BUCKET_NAME")
 
+s3 = boto3.client(
+    "s3",
+    endpoint_url=LIARA_ENDPOINT_URL,
+    aws_access_key_id=LIARA_ACCESS_KEY,
+    aws_secret_access_key=LIARA_SECRET_KEY
+)
 database_url = os.environ.get("DATABASE_URL", "sqlite:///ss_porm.db")
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
@@ -109,15 +121,16 @@ def upload_file(patient_code):
     file = request.files["file"]
     if not file or not file.filename:
         return jsonify({"error": "No file selected"}), 400
+    patient_code_safe = secure_filename(patient_code)
+filename = secure_filename(file.filename)
+object_key = f"{patient_code_safe}/{filename}"
 
-    patient_folder = os.path.join(
-        app.config["UPLOAD_FOLDER"],
-        secure_filename(patient_code)
-    )
-    os.makedirs(patient_folder, exist_ok=True)
-
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(patient_folder, filename))
+s3.upload_fileobj(
+    file,
+    LIARA_BUCKET_NAME,
+    object_key,
+    ExtraArgs={"ContentType": file.content_type or "application/octet-stream"}
+)
 
     return jsonify({
         "status": "ok",
