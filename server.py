@@ -140,15 +140,19 @@ def upload_file(patient_code):
     })
 @app.route("/api/files/<patient_code>", methods=["GET"])
 def list_patient_files(patient_code):
-    patient_folder = os.path.join(
-        app.config["UPLOAD_FOLDER"],
-        secure_filename(patient_code)
+    patient_code_safe = secure_filename(patient_code)
+    prefix = f"{patient_code_safe}/"
+
+    response = s3.list_objects_v2(
+        Bucket=LIARA_BUCKET_NAME,
+        Prefix=prefix
     )
 
-    if not os.path.isdir(patient_folder):
-        return jsonify({"patient_code": patient_code, "files": []})
-
-    files = os.listdir(patient_folder)
+    files = []
+    for obj in response.get("Contents", []):
+        filename = obj["Key"][len(prefix):]
+        if filename:
+            files.append(filename)
 
     return jsonify({
         "patient_code": patient_code,
