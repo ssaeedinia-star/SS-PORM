@@ -462,6 +462,7 @@ else if(el.type==='checkbox')el.checked=!!v;
 else if(els.type!=='file')els.value=(v??'');
 }
 calc();
+await loadPatientFiles(code);
 s.textContent='✓ پرونده بیمار با موفقیت بازیابی شد.';
 }catch(e){
 s.textContent='بازیابی انجام نشد: '+e.message;
