@@ -519,6 +519,7 @@ s.textContent='✓ اطلاعات بیمار با موفقیت ذخیره شد.'
 await loadPatientFiles(o.patient_code);  
 }catch(e){s.textContent='ذخیره انجام نشد: '+e.message;}
 finally{b.disabled=false;}
+}
 async function loadPatientFiles(patientCode){
   const box=document.getElementById('patientFiles');
   try{
