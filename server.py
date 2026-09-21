@@ -118,7 +118,8 @@ def upload_file(patient_code):
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
-        file = request.files["file"]
+    file = request.files["file"]
+
     if not file or not file.filename:
         return jsonify({"error": "No file selected"}), 400
 
