@@ -2,7 +2,7 @@ import os
 import boto3
 from botocore.config import Config
 from werkzeug.utils import secure_filename
-from flask import Flask, request, jsonify, send_from_directory, redirect
+from flask import Flask, request, jsonify, send_from_directory, redirect, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -168,16 +168,19 @@ def get_patient_file(patient_code, filename):
     filename_safe = secure_filename(filename)
     object_key = f"{patient_code_safe}/{filename_safe}"
 
-    url = s3.generate_presigned_url(
-        "get_object",
-        Params={
-            "Bucket": LIARA_BUCKET_NAME,
-            "Key": object_key
-        },
-        ExpiresIn=3600
+    try:
+    obj = s3.get_object(
+        Bucket=LIARA_BUCKET_NAME,
+        Key=object_key
     )
 
-    return redirect(url)
+    return Response(
+        obj["Body"].read(),
+        mimetype=obj.get("ContentType", "application/octet-stream")
+    )
+
+except Exception as e:
+    return jsonify({"error": str(e)}), 404
 
 
 
