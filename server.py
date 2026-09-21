@@ -168,20 +168,19 @@ def get_patient_file(patient_code, filename):
     filename_safe = secure_filename(filename)
     object_key = f"{patient_code_safe}/{filename_safe}"
 
-    try:
-    obj = s3.get_object(
-        Bucket=LIARA_BUCKET_NAME,
-        Key=object_key
-    )
+        try:
+        obj = s3.get_object(
+            Bucket=LIARA_BUCKET_NAME,
+            Key=object_key
+        )
 
-    return Response(
-        obj["Body"].read(),
-        mimetype=obj.get("ContentType", "application/octet-stream")
-    )
+        return Response(
+            obj["Body"].read(),
+            mimetype=obj.get("ContentType", "application/octet-stream")
+        )
 
-except Exception as e:
-    return jsonify({"error": str(e)}), 404
-
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
 
 
 
