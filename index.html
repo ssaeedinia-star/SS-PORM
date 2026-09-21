@@ -486,7 +486,7 @@ s.textContent='بازیابی انجام نشد: '+e.message;
     box.textContent='دریافت لیست بیماران انجام نشد: '+e.message;
   }
 }async function savePatient(){
-alert('savePatient started');
+
 let f=document.getElementById('f'),o={};
 for(let el of f.elements){
 if(!el.name||el.type==='file'||el.type==='button')continue;
@@ -548,4 +548,4 @@ async function loadPatientFiles(patientCode){
     box.innerHTML='خطا در دریافت فایل‌ها: '+e.message;
     box.style.display='block';
   }
-}function exportCSV(){let fd=new FormData(document.getElementById('f')),o={};for(let [k,v] of fd)o[k]=v;o.BMI=document.getElementById('bmi').textContent;o.mFI5=document.getElementById('mfi').textContent;let ks=Object.keys(o),esc=x=>'"'+String(x??'').replaceAll('"','""')+'"',csv=ks.map(esc).join(',')+'\n'+ks.map(k=>esc(o[k])).join(',');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='SS_PORM_patient.csv';a.click()}alert('SCRIPT END REACHED');</script></body></html>
+}function exportCSV(){let fd=new FormData(document.getElementById('f')),o={};for(let [k,v] of fd)o[k]=v;o.BMI=document.getElementById('bmi').textContent;o.mFI5=document.getElementById('mfi').textContent;let ks=Object.keys(o),esc=x=>'"'+String(x??'').replaceAll('"','""')+'"',csv=ks.map(esc).join(',')+'\n'+ks.map(k=>esc(o[k])).join(',');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='SS_PORM_patient.csv';a.click()}</script></body></html>
