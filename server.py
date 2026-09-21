@@ -1,5 +1,6 @@
 import os
 import boto3
+from botocore.config import Config
 from werkzeug.utils import secure_filename
 from flask import Flask, request, jsonify, send_from_directory, redirect
 from flask_sqlalchemy import SQLAlchemy
@@ -17,7 +18,8 @@ s3 = boto3.client(
     "s3",
     endpoint_url=LIARA_ENDPOINT_URL,
     aws_access_key_id=LIARA_ACCESS_KEY,
-    aws_secret_access_key=LIARA_SECRET_KEY
+    aws_secret_access_key=LIARA_SECRET_KEY,
+    config=Config(s3={"addressing_style": "path"})
 )
 database_url = os.environ.get("DATABASE_URL", "sqlite:///ss_porm.db")
 if database_url.startswith("postgres://"):
