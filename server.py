@@ -168,7 +168,7 @@ def get_patient_file(patient_code, filename):
     filename_safe = secure_filename(filename)
     object_key = f"{patient_code_safe}/{filename_safe}"
 
-        try:
+    try:
         obj = s3.get_object(
             Bucket=LIARA_BUCKET_NAME,
             Key=object_key
@@ -181,7 +181,6 @@ def get_patient_file(patient_code, filename):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 404
-
 
 
 if __name__ == "__main__":
