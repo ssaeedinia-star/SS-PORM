@@ -500,7 +500,7 @@ o.mFI5=document.getElementById('mfi').textContent;
 let s=document.getElementById('saveStatus'),b=document.getElementById('saveBtn');
 s.style.display='block';
 if(!o.patient_code){s.textContent='ابتدا کد بیمار / کد مطالعه را وارد کنید.';return;}
-b.disabled=false;s.textContent='در حال ذخیره...';
+b.disabled=true;s.textContent='در حال ذخیره...';
 try{
 let r=await fetch('https://ss-porm.onrender.com/api/patients',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
 let d=await r.json();
