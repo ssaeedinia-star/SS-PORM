@@ -437,7 +437,7 @@
 </div>
 <div class='card'><h2>خروجی مدل</h2><p>احتمال ODI MCID در 12 ماه: <b>پس از آموزش مدل</b></p><p>احتمال major complication در 90 روز: <b>پس از آموزش مدل</b></p><p>احتمال reoperation/mechanical complication: <b>پس از آموزش مدل</b></p></div>
 <div class='card'><button type='button' onclick='exportCSV()'>خروجی CSV همین بیمار</button></div><div class='card'>
-<button type="button" id="saveBtn" onclick="alert(typeof savePatient)">ذخیره بیمار در سرور</button>
+<button type="button" id="saveBtn" onclick="savePatient()">ذخیره بیمار در سرور</button>
 <div id='saveStatus' class='out' style='display:none'></div><div id="patientFiles" class="out" style="margin-top:12px;display:none"></div>
 </div></form>
 <script>function calc(){let h=+document.getElementById('height').value/100,w=+document.getElementById('weight').value;document.getElementById('bmi').textContent=h&&w?(w/(h*h)).toFixed(1):'—';let c=[...document.querySelectorAll('.mfi')].filter(x=>x.checked).length;document.getElementById('mfic').textContent=c;document.getElementById('mfi').textContent=(c/5).toFixed(2);let q=[...document.querySelectorAll('.modq')].filter(x=>x.value!=='');let n=q.length,sum=q.reduce((a,x)=>a+(+x.value),0),score=n?100*sum/(5*n):null;document.getElementById('modq_n').textContent=n;document.getElementById('modq_score').textContent=score===null?'—':score.toFixed(1);document.getElementById('odi_hidden').value=score===null?'':score.toFixed(1)}document.addEventListener('input',calc);async function loadPatient(){
