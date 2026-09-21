@@ -486,6 +486,7 @@ s.textContent='بازیابی انجام نشد: '+e.message;
     box.textContent='دریافت لیست بیماران انجام نشد: '+e.message;
   }
 }async function savePatient(){
+alert('savePatient started');
 let f=document.getElementById('f'),o={};
 for(let el of f.elements){
 if(!el.name||el.type==='file'||el.type==='button')continue;
