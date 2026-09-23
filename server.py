@@ -114,6 +114,7 @@ def save_patient():
 
 
 @app.route("/api/patients/<patient_code>", methods=["GET"])
+@login_required
 def get_patient(patient_code):
 
     patient = Patient.query.filter_by(
@@ -126,6 +127,7 @@ def get_patient(patient_code):
     return jsonify(patient.data)
 
 @app.route("/api/patients", methods=["GET"])
+@login_required
 def list_patients():
     patients = Patient.query.order_by(Patient.id.desc()).all()
 
