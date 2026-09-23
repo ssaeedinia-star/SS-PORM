@@ -1,4 +1,5 @@
 import os
+from functools import wraps
 import boto3
 from botocore.config import Config
 from werkzeug.utils import secure_filename
@@ -32,6 +33,13 @@ app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get("logged_in"):
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route("/api/login", methods=["POST"])
@@ -74,6 +82,7 @@ def home():
 
 
 @app.route("/api/patients", methods=["POST"])
+@login_required
 def save_patient():
     payload = request.get_json(silent=True)
 
