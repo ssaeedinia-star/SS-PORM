@@ -169,6 +169,9 @@ def upload_file(patient_code):
 
     patient_code_safe = secure_filename(patient_code)
     filename = secure_filename(file.filename)
+file_title = request.form.get("title", "").strip()
+file_date = request.form.get("date", "").strip()
+file_type = request.form.get("type", "").strip()
     object_key = f"{patient_code_safe}/{filename}"
 
     s3.upload_fileobj(
@@ -176,7 +179,12 @@ def upload_file(patient_code):
         LIARA_BUCKET_NAME,
         object_key,
         ExtraArgs={
-            "ContentType": file.content_type or "application/octet-stream"
+    "ContentType": file.content_type or "application/octet-stream",
+    "Metadata": {
+        "title": file_title,
+        "date": file_date,
+        "type": file_type
+    }
         }
     )
 
@@ -196,10 +204,24 @@ def list_patient_files(patient_code):
     )
 
     files = []
-    for obj in response.get("Contents", []):
-        filename = obj["Key"][len(prefix):]
-        if filename:
-            files.append(filename)
+
+for obj in response.get("Contents", []):
+    filename = obj["Key"][len(prefix):]
+
+    if filename:
+        head = s3.head_object(
+            Bucket=LIARA_BUCKET_NAME,
+            Key=obj["Key"]
+        )
+
+        metadata = head.get("Metadata", {})
+
+        files.append({
+            "filename": filename,
+            "title": metadata.get("title", ""),
+            "date": metadata.get("date", ""),
+            "type": metadata.get("type", "")
+        })
 
     return jsonify({
         "patient_code": patient_code,
