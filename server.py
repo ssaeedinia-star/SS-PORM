@@ -2,12 +2,15 @@ import os
 import boto3
 from botocore.config import Config
 from werkzeug.utils import secure_filename
-from flask import Flask, request, jsonify, send_from_directory, redirect, Response
+from flask import Flask, request, jsonify, send_from_directory, redirect, Response, session 
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__, static_folder=".")
+app.secret_key = os.environ.get("SECRET_KEY")
 CORS(app)
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 # Liara Object Storage
 LIARA_ENDPOINT_URL = os.environ.get("LIARA_ENDPOINT_URL")
 LIARA_ACCESS_KEY = os.environ.get("LIARA_ACCESS_KEY")
@@ -31,6 +34,28 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
+@app.route("/api/login", methods=["POST"])
+def login():
+    data = request.get_json(silent=True) or {}
+
+    if (
+        data.get("username") == ADMIN_USERNAME
+        and data.get("password") == ADMIN_PASSWORD
+    ):
+        session["logged_in"] = True
+        return jsonify({"status": "ok"})
+
+    return jsonify({"error": "نام کاربری یا رمز عبور اشتباه است"}), 401
+    @app.route("/api/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({"status": "ok"})
+
+
+@app.route("/api/auth-status", methods=["GET"])
+def auth_status():
+    return jsonify({"logged_in": bool(session.get("logged_in"))})
+    
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     patient_code = db.Column(db.String(100), unique=True, nullable=False)
