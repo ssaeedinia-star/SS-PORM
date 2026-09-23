@@ -1,4 +1,15 @@
-<!doctype html><html lang='fa' dir='rtl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>SS-PORM V3.6</title><style>body{font-family:Tahoma,Arial,sans-serif;max-width:760px;margin:auto;padding:16px;background:#f5f5f5}h1{font-size:22px}.card{background:white;padding:16px;margin:12px 0;border-radius:14px}label{display:block;margin:10px 0 5px}input,select,textarea{box-sizing:border-box;width:100%;padding:11px;border:1px solid #bbb;border-radius:9px;font-size:16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.out{background:#eef2f3;padding:10px;border-radius:9px;margin-top:10px}button{padding:12px 16px;border:0;border-radius:10px;font-size:16px;cursor:pointer}.small{font-size:13px;color:#555}@media(max-width:520px){.row{grid-template-columns:1fr}}</style></head><body><h1>SS-PORM V3.6 — فرم اولیه ارزیابی جراحی ستون فقرات</h1><p class='small'>نسخه پژوهشی اولیه؛ خروجی پیش‌بینی تا زمان آموزش و اعتبارسنجی مدل غیرفعال است.</p>
+<!doctype html><html lang='fa' dir='rtl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>SS-PORM V3.6</title><style>body{font-family:Tahoma,Arial,sans-serif;max-width:760px;margin:auto;padding:16px;background:#f5f5f5}h1{font-size:22px}.card{background:white;padding:16px;margin:12px 0;border-radius:14px}label{display:block;margin:10px 0 5px}input,select,textarea{box-sizing:border-box;width:100%;padding:11px;border:1px solid #bbb;border-radius:9px;font-size:16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.out{background:#eef2f3;padding:10px;border-radius:9px;margin-top:10px}button{padding:12px 16px;border:0;border-radius:10px;font-size:16px;cursor:pointer}.small{font-size:13px;color:#555}@media(max-width:520px){.row{grid-template-columns:1fr}}</style></head><body>
+<div id="loginBox" class="card">
+  <h2>ورود به SS-PORM</h2>
+  <label>نام کاربری</label>
+  <input id="loginUsername" autocomplete="username">
+  <label>رمز عبور</label>
+  <input id="loginPassword" type="password" autocomplete="current-password">
+  <button type="button" onclick="doLogin()">ورود</button>
+  <div id="loginStatus" class="small"></div>
+</div>
+
+<div id="appContent" style="display:none"><h1>SS-PORM V3.6 — فرم اولیه ارزیابی جراحی ستون فقرات</h1><p class='small'>نسخه پژوهشی اولیه؛ خروجی پیش‌بینی تا زمان آموزش و اعتبارسنجی مدل غیرفعال است.</p>
 <form id='f'>
 <div class='card'><h2>مشخصات پایه</h2>
 <div class='row'><div><label>کد بیمار / کد مطالعه</label><input name='study_id'></div><button type='button' onclick='loadPatient()'>بازیابی پرونده بیمار</button><div id='loadStatus' class='small'></div><button type='button' onclick='listPatients()'>لیست بیماران ذخیره‌شده</button><div id='patientList' class='small'></div><div><label>پزشک معالج</label><input name='treating_physician'></div></div>
@@ -548,4 +559,53 @@ async function loadPatientFiles(patientCode){
     box.innerHTML='خطا در دریافت فایل‌ها: '+e.message;
     box.style.display='block';
   }
-}function exportCSV(){let fd=new FormData(document.getElementById('f')),o={};for(let [k,v] of fd)o[k]=v;o.BMI=document.getElementById('bmi').textContent;o.mFI5=document.getElementById('mfi').textContent;let ks=Object.keys(o),esc=x=>'"'+String(x??'').replaceAll('"','""')+'"',csv=ks.map(esc).join(',')+'\n'+ks.map(k=>esc(o[k])).join(',');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='SS_PORM_patient.csv';a.click()}</script></body></html>
+}function exportCSV(){let fd=new FormData(document.getElementById('f')),o={};for(let [k,v] of fd)o[k]=v;o.BMI=document.getElementById('bmi').textContent;o.mFI5=document.getElementById('mfi').textContent;let ks=Object.keys(o),esc=x=>'"'+String(x??'').replaceAll('"','""')+'"',csv=ks.map(esc).join(',')+'\n'+ks.map(k=>esc(o[k])).join(',');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='SS_PORM_patient.csv';a.click()}async function doLogin(){
+  const username=document.getElementById('loginUsername').value.trim();
+  const password=document.getElementById('loginPassword').value;
+  const status=document.getElementById('loginStatus');
+
+  status.textContent='در حال ورود...';
+
+  try{
+    const r=await fetch('/api/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'same-origin',
+      body:JSON.stringify({username,password})
+    });
+
+    const data=await r.json();
+
+    if(r.ok){
+      document.getElementById('loginBox').style.display='none';
+      document.getElementById('appContent').style.display='block';
+      status.textContent='';
+    }else{
+      status.textContent=data.error || 'نام کاربری یا رمز عبور اشتباه است';
+    }
+  }catch(e){
+    status.textContent='خطا در ارتباط با سرور';
+  }
+}
+
+async function checkAuth(){
+  try{
+    const r=await fetch('/api/auth-status',{
+      credentials:'same-origin'
+    });
+    const data=await r.json();
+
+    if(data.logged_in){
+      document.getElementById('loginBox').style.display='none';
+      document.getElementById('appContent').style.display='block';
+    }else{
+      document.getElementById('loginBox').style.display='block';
+      document.getElementById('appContent').style.display='none';
+    }
+  }catch(e){
+    document.getElementById('loginBox').style.display='block';
+    document.getElementById('appContent').style.display='none';
+  }
+}
+
+checkAuth();</script></div></body></html>
