@@ -8,7 +8,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__, static_folder=".")
-app.secret_key = os.environ.get("SECRET_KEY")
+app.secret_key = 
+os.environ.get("SECRET_KEY")
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax"
+)
 CORS(app)
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
