@@ -152,6 +152,7 @@ def health():
 
 
 @app.route("/api/upload/<patient_code>", methods=["POST"])
+@login_required
 def upload_file(patient_code):
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
@@ -179,6 +180,7 @@ def upload_file(patient_code):
         "filename": filename
     })
 @app.route("/api/files/<patient_code>", methods=["GET"])
+@login_required
 def list_patient_files(patient_code):
     patient_code_safe = secure_filename(patient_code)
     prefix = f"{patient_code_safe}/"
@@ -199,6 +201,7 @@ def list_patient_files(patient_code):
         "files": files
     })
 @app.route("/api/files/<patient_code>/<filename>", methods=["GET"])
+@login_required
 def get_patient_file(patient_code, filename):
     patient_code_safe = secure_filename(patient_code)
     filename_safe = secure_filename(filename)
