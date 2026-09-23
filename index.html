@@ -15,6 +15,16 @@
 <div class='card'><h2>مشخصات پایه</h2>
 <div class='row'><div><label>کد بیمار / کد مطالعه</label><input name='study_id'></div><button type='button' onclick='loadPatient()'>بازیابی پرونده بیمار</button><div id='loadStatus' class='small'></div><button type='button' onclick='listPatients()'>لیست بیماران ذخیره‌شده</button><div id='patientList' class='small'></div><div><label>پزشک معالج</label><input name='treating_physician'></div></div>
 <label>نام و نام خانوادگی بیمار</label><input name='patient_name' autocomplete='name'>
+<div class='row'>
+  <div>
+    <label>تاریخ ارزیابی اولیه</label>
+    <input type='date' name='assessment_date'>
+  </div>
+  <div>
+    <label>تاریخ جراحی</label>
+    <input type='date' name='surgery_date'>
+  </div>
+  </div>
 <div class='row'><div><label>شهر محل زندگی</label><input name='city'></div><div><label>شغل</label><input name='occupation'></div><div><label>سن</label><input type='number' name='age'></div><div><label>جنس</label><select name='sex'><option></option><option>مرد</option><option>زن</option></select></div><div><label>قد (cm)</label><input id='height' name='height_cm' type='number'></div><div><label>وزن (kg)</label><input id='weight' name='weight_kg' type='number'></div></div><div class='out'>BMI: <b id='bmi'>—</b></div>
 <p class='small'>برای فایل پژوهشی نهایی بهتر است نام بیمار جدا از دیتاست تحلیلی نگهداری شود و تحلیل با کد بیمار انجام شود.</p></div>
 <div class='card'><h2>بیماری‌های همراه و mFI-5</h2><label><input style='width:auto' type='checkbox' class='mfi' name='dm'> دیابت</label><label><input style='width:auto' type='checkbox' class='mfi' name='htn'> پرفشاری خون نیازمند دارو</label><label><input style='width:auto' type='checkbox' class='mfi' name='chf'> نارسایی قلبی CHF</label><label><input style='width:auto' type='checkbox' class='mfi' name='copd'> COPD</label><label><input style='width:auto' type='checkbox' class='mfi' name='dependent'> وابستگی عملکردی</label><label><input style='width:auto' type='checkbox' name='renal'> بیماری کلیوی</label><label><input style='width:auto' type='checkbox' name='osteoporosis'> استئوپروز</label><label><input style='width:auto' type='checkbox' name='steroid'> مصرف مزمن کورتون</label><div class='out'>mFI-5: <b id='mfi'>0.00</b> (<span id='mfic'>0</span>/5)</div></div>
@@ -108,10 +118,22 @@
 <div class='card'><h2>پیوست تصاویر و فایل‌های رادیولوژیک بیمار</h2>
 <p class='small'>برای پروتوتایپ موبایل می‌توانید فایل‌های مرتبط با همین بیمار را انتخاب کنید. این انتخاب به‌تنهایی فایل را روی سرور ذخیره نمی‌کند؛ برای آرشیو دائمی و امن تصاویر/DICOM باید در نسخه کلینیکی backend امن و فضای ذخیره‌سازی اختصاصی پیاده‌سازی شود.</p>
 <div class='row'>
-<div><label>X-ray / Whole-spine / Dynamic</label><input type='file' name='attachment_xray' accept='image/*,.pdf' multiple></div>
-<div><label>CT</label><input type='file' name='attachment_ct' accept='image/*,.pdf,.dcm,application/dicom' multiple></div>
-<div><label>MRI</label><input type='file' name='attachment_mri' accept='image/*,.pdf,.dcm,application/dicom' multiple></div>
-<div><label>سایر فایل‌های تصویربرداری / گزارش‌ها</label><input type='file' name='attachment_other_imaging' accept='image/*,.pdf,.dcm,application/dicom' multiple></div>
+<div><label>X-ray / Whole-spine / Dynamic</label><input type="text" name="xray_title"
+       placeholder="عنوان تصویر؛ مثال: Whole Spine Standing - Pre-op">
+
+<input type="date" name="xray_date"><input type='file' name='attachment_xray' accept='image/*,.pdf' multiple></div>
+<div><label>CT</label><input type="text" name="ct_title"
+       placeholder="عنوان تصویر؛ مثال: CT Lumbar - Post-op">
+
+<input type="date" name="ct_date"><input type='file' name='attachment_ct' accept='image/*,.pdf,.dcm,application/dicom' multiple></div>
+<div><label>MRI</label><input type="text" name="mri_title"
+       placeholder="عنوان تصویر؛ مثال: MRI Lumbar - Pre-op">
+
+<input type="date" name="mri_date"><input type='file' name='attachment_mri' accept='image/*,.pdf,.dcm,application/dicom' multiple></div>
+<div><label>سایر فایل‌های تصویربرداری / گزارش‌ها</label><input type="text" name="other_imaging_title"
+       placeholder="عنوان فایل؛ مثال: EMG-NCV / Radiology Report">
+
+<input type="date" name="other_imaging_date"><input type='file' name='attachment_other_imaging' accept='image/*,.pdf,.dcm,application/dicom' multiple></div>
 </div>
 <label>توضیحات پیوست‌های تصویربرداری</label>
 <textarea name='imaging_attachment_notes' rows='2' placeholder='مثال: MRI lumbar 1405/06/20؛ CT lumbar pre-op؛ standing whole-spine AP/Lateral'></textarea>
@@ -403,6 +425,10 @@
 <p class='small'>پیگیری‌ها به‌صورت جداگانه ثبت می‌شوند تا تغییرات درد، عملکرد و عوارض در طول زمان قابل تحلیل باشد.</p>
 
 <h3>پیگیری 3 ماه</h3>
+<div>
+  <label>تاریخ واقعی پیگیری 3 ماه</label>
+  <input type="date" name="followup_date_3m">
+</div>
 <div class='row'>
 <div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_3m'></div>
 <div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_3m'></div>
@@ -413,6 +439,10 @@
 </div>
 
 <h3>پیگیری 6 ماه</h3>
+<div>
+  <label>تاریخ واقعی پیگیری 6 ماه</label>
+  <input type="date" name="followup_date_6m">
+</div>
 <div class='row'>
 <div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_6m'></div>
 <div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_6m'></div>
@@ -426,8 +456,14 @@
 <label>شرح وضعیت/عارضه در 6 ماه</label><textarea name='notes_6m' rows='2'></textarea>
 
 <h3>پیگیری 12 ماه (1 سال)</h3>
+
+<div>
+  <label>تاریخ واقعی پیگیری 12 ماه</label>
+  <input type="date" name="followup_date_12m">
+</div>
+
 <div class='row'>
-<div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_12m'></div>
+  <div><label>ODI / MODQ (0-100)</label><input type='number' min='0' max='100' name='odi_12m'></div>
 <div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_12m'></div>
 <div><label>mJOA (0–18) — Myelopathy</label><input type='number' min='0' max='18' name='mjoa_12m'></div>
 <div><label>NRS درد کمر/گردن (0–10)</label><input type='number' min='0' max='10' name='axial_pain_12m'></div>
