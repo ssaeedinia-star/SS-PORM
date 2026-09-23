@@ -46,7 +46,7 @@ def login():
         return jsonify({"status": "ok"})
 
     return jsonify({"error": "نام کاربری یا رمز عبور اشتباه است"}), 401
-    @app.route("/api/logout", methods=["POST"])
+@app.route("/api/logout", methods=["POST"])
 def logout():
     session.clear()
     return jsonify({"status": "ok"})
