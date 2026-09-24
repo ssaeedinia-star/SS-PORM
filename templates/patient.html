@@ -144,15 +144,21 @@
             <div class="meta">
 
                 {% if file.type %}
-                    نوع فایل:
-                    {{ file.type }}
-                    <br>
-                {% endif %}
+نوع فایل:
+{{ file.type }}
+<br>
+{% endif %}
 
-                {% if file.date %}
-                    تاریخ:
-                    {{ file.date }}
-                {% endif %}
+{% if file.stage %}
+مرحله / زمان:
+{{ file.stage }}
+<br>
+{% endif %}
+
+{% if file.date %}
+تاریخ:
+{{ file.date }}
+{% endif %}
 
             </div>
 
