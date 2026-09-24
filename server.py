@@ -225,7 +225,8 @@ def list_patient_files(patient_code):
                 "filename": filename,
                 "title": metadata.get("title", ""),
                 "date": metadata.get("date", ""),
-                "type": metadata.get("type", "")
+                "type": metadata.get("type", ""),
+                "stage": metadata.get("stage", "")
             })
 
     return jsonify({
