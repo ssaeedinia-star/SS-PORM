@@ -13,7 +13,7 @@
 <button type="button" onclick="doLogout()" style="float:left">خروج</button><h1>SS-PORM V3.6 — فرم اولیه ارزیابی جراحی ستون فقرات</h1><p class='small'>نسخه پژوهشی اولیه؛ خروجی پیش‌بینی تا زمان آموزش و اعتبارسنجی مدل غیرفعال است.</p>
 <form id='f'>
 <div class='card'><h2>مشخصات پایه</h2>
-<div class='row'><div><label>کد بیمار / کد مطالعه</label><input name='study_id'></div><button type='button' onclick='loadPatient()'>بازیابی پرونده بیمار</button><div id='loadStatus' class='small'></div><button type='button' onclick='listPatients()'>لیست بیماران ذخیره‌شده</button><div id='patientList' class='small'></div><div><label>پزشک معالج</label><input name='treating_physician'></div></div>
+<div class='row'><div><label>کد بیمار / کد مطالعه</label><input name='study_id'></div><button type='button' onclick='loadPatient()'>بازیابی پرونده بیمار</button><button type="button" onclick="openPatientProfile()">📁 پرونده تصاویر و مدارک</button><div id='loadStatus' class='small'></div><button type='button' onclick='listPatients()'>لیست بیماران ذخیره‌شده</button><div id='patientList' class='small'></div><div><label>پزشک معالج</label><input name='treating_physician'></div></div>
 <label>نام و نام خانوادگی بیمار</label><input name='patient_name' autocomplete='name'>
 <div class='row'>
   <div>
@@ -655,4 +655,15 @@ async function checkAuth(){
   }
 }
 
+function openPatientProfile() {
+    const input = document.querySelector('[name="study_id"]');
+    const patientCode = input ? input.value.trim() : '';
+
+    if (!patientCode) {
+        alert('ابتدا کد بیمار / کد مطالعه را وارد کنید.');
+        return;
+    }
+
+    window.location.href = '/patient/' + encodeURIComponent(patientCode);
+}
 checkAuth();</script></div></body></html>
