@@ -44,7 +44,11 @@ PERSIAN_DATE_ASSETS='''<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm
 PERSIAN_DATE_SCRIPT=r'''<script>(function(){function i(){if(!window.jQuery||!jQuery.fn.persianDatepicker)return;document.querySelectorAll('input[name="assessment_date"],input[name="surgery_date"],input[type="date"],input[name*="date"],input[id*="date"]').forEach(function(e){if(e.dataset.persianReady)return;e.dataset.persianReady='1';e.type='text';e.removeAttribute('pattern');e.setAttribute('inputmode','none');e.readOnly=true;jQuery(e).persianDatepicker({format:'YYYY/MM/DD',autoClose:true,initialValue:false,observer:true,calendar:{persian:{locale:'fa'}}});});}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',i):i();setTimeout(i,500)})();</script>'''
 CLEAR_FORM_SCRIPT=r'''<script>(function(){function c(){var f=document.getElementById('f');if(!f)return;f.reset();['bmi','mfi','mfic','modqScore','odi'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=id==='mfi'?'0.00':id==='mfic'?'0':'—';});}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',c):c();window.addEventListener('pageshow',function(e){if(e.persisted)c()})})();</script>'''
 UNIFIED_FILES_SCRIPT=r'''<script>(function(){function u(){document.querySelectorAll('input[type="file"]').forEach(function(inp){var card=inp.closest('.card');if(!card||card.dataset.unifiedFiles)return;card.dataset.unifiedFiles='1';card.innerHTML='<h2>تصاویر و مدارک بیمار</h2><p class="small">آپلود و مشاهده تصاویر و مدارک از پرونده واحد بیمار انجام می‌شود.</p><button type="button" onclick="openPatientProfile()">📁 باز کردن پرونده تصاویر و مدارک</button>';});}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',u):u()})();</script>'''
-PATIENT_LIST_SCRIPT=r'''<style>#patientList{max-height:260px;overflow-y:auto;border:1px solid #ddd;border-radius:10px;margin-top:8px;background:#fff}#patientList .patient-row{display:grid;grid-template-columns:42px 1fr;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;cursor:pointer;font-size:13px}#patientList .patient-row:last-child{border-bottom:0}#patientList .patient-row:hover{background:#f3f6f8}#patientList .row-no{font-weight:700;text-align:center;background:#eef2f3;border-radius:7px;padding:5px 2px}#patientList .patient-main{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}</style><script>window.listPatients=async function(){const box=document.getElementById('patientList');box.textContent='در حال دریافت لیست بیماران...';try{const r=await fetch('/api/patients');const patients=await r.json();if(!r.ok)throw new Error('HTTP '+r.status);if(!patients.length){box.textContent='بیماری ذخیره نشده است.';return;}box.innerHTML=patients.map((p,i)=>{const code=String(p.patient_code||'').replace(/'/g,"&#39;");const name=String(p.patient_name||'');return `<div class="patient-row" onclick="document.getElementById('f').elements['study_id'].value='${code}';loadPatient();"><span class="row-no">${i+1}</span><span class="patient-main"><b>${code}</b>${name?' — '+name:''}</span></div>`}).join('');}catch(e){box.textContent='دریافت لیست بیماران انجام نشد: '+e.message;}};</script>'''
+PATIENT_LIST_SCRIPT=r'''<style>#patientList{max-height:260px;overflow-y:auto;border:1px solid #ddd;border-radius:10px;margin-top:8px;background:#fff}#patientList .patient-row{display:grid;grid-template-columns:42px 1fr auto;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;font-size:13px}#patientList .patient-row:last-child{border-bottom:0}#patientList .patient-main{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}#patientList .row-no{font-weight:700;text-align:center;background:#eef2f3;border-radius:7px;padding:5px 2px}.delete-patient{background:#b42318;color:#fff;padding:7px 9px;font-size:12px;border-radius:7px}</style><script>
+function escHtml(v){return String(v??'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+window.listPatients=async function(){const box=document.getElementById('patientList');box.textContent='در حال دریافت لیست بیماران...';try{const r=await fetch('/api/patients');const patients=await r.json();if(!r.ok)throw new Error('HTTP '+r.status);if(!patients.length){box.textContent='بیماری ذخیره نشده است.';return;}box.innerHTML=patients.map(p=>{const code=escHtml(p.patient_code),name=escHtml(p.patient_name),row=p.row_number;return `<div class="patient-row"><span class="row-no">${row}</span><span class="patient-main" data-code="${code}" onclick="document.getElementById('f').elements['study_id'].value=this.dataset.code;loadPatient();"><b>${code}</b>${name?' — '+name:''}</span><button type="button" class="delete-patient" data-code="${code}" onclick="deletePatient(this.dataset.code)">حذف</button></div>`}).join('');}catch(e){box.textContent='دریافت لیست بیماران انجام نشد: '+e.message;}};
+window.deletePatient=async function(code){if(!confirm('پرونده '+code+' به‌طور کامل حذف شود؟\nاطلاعات بیمار و همه تصاویر/فایل‌های او حذف خواهند شد.'))return;if(!confirm('تأیید نهایی حذف پرونده '+code+'؟ این عملیات قابل بازگشت نیست.'))return;try{const r=await fetch('/api/patients/'+encodeURIComponent(code),{method:'DELETE'});const d=await r.json();if(!r.ok)throw new Error(d.error||('HTTP '+r.status));const f=document.getElementById('f');if((f.elements['study_id'].value||'').trim()===code)f.reset();await listPatients();alert('پرونده حذف شد.');}catch(e){alert('حذف پرونده انجام نشد: '+e.message);}};
+</script>'''
 @app.route('/')
 def home():
  with open('index.html',encoding='utf-8') as f: html=f.read()
@@ -61,14 +65,32 @@ def save_patient():
  if x:x.data=p
  else:db.session.add(Patient(patient_code=code,data=p))
  db.session.commit(); return jsonify({'success':True,'patient_code':code})
-@app.route('/api/patients/<patient_code>')
+@app.route('/api/patients/<patient_code>',methods=['GET'])
 @login_required
 def get_patient(patient_code):
  p=Patient.query.filter_by(patient_code=patient_code).first(); return jsonify(p.data) if p else (jsonify({'error':'Patient not found'}),404)
+@app.route('/api/patients/<patient_code>',methods=['DELETE'])
+@login_required
+def delete_patient(patient_code):
+ p=Patient.query.filter_by(patient_code=patient_code).first()
+ if not p:return jsonify({'error':'Patient not found'}),404
+ code=secure_filename(patient_code); prefix=f'{code}/'
+ try:
+  while True:
+   res=s3.list_objects_v2(Bucket=LIARA_BUCKET_NAME,Prefix=prefix)
+   objs=[{'Key':o['Key']} for o in res.get('Contents',[])]
+   if objs:s3.delete_objects(Bucket=LIARA_BUCKET_NAME,Delete={'Objects':objs,'Quiet':True})
+   if not res.get('IsTruncated'):break
+  PatientFile.query.filter_by(patient_code=code).delete(synchronize_session=False)
+  db.session.delete(p); db.session.commit()
+  return jsonify({'success':True,'patient_code':patient_code})
+ except Exception as e:
+  db.session.rollback(); return jsonify({'error':str(e)}),500
 @app.route('/api/patients')
 @login_required
 def list_patients():
- return jsonify([{'patient_code':p.patient_code,'patient_name':(p.data or {}).get('patient_name',''),'age':(p.data or {}).get('age',''),'sex':(p.data or {}).get('sex',''),'diagnosis':(p.data or {}).get('diagnosis','')} for p in Patient.query.order_by(Patient.id.desc()).all()])
+ ps=Patient.query.order_by(Patient.id.asc()).all()
+ return jsonify([{'row_number':p.id,'patient_code':p.patient_code,'patient_name':(p.data or {}).get('patient_name',''),'age':(p.data or {}).get('age',''),'sex':(p.data or {}).get('sex',''),'diagnosis':(p.data or {}).get('diagnosis','')} for p in ps])
 @app.route('/api/health')
 def health(): return jsonify({'status':'ok','service':'SS-PORM'})
 @app.route('/upload')
