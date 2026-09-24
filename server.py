@@ -205,23 +205,23 @@ def list_patient_files(patient_code):
 
     files = []
 
-for obj in response.get("Contents", []):
-    filename = obj["Key"][len(prefix):]
+    for obj in response.get("Contents", []):
+        filename = obj["Key"][len(prefix):]
 
-    if filename:
-        head = s3.head_object(
-            Bucket=LIARA_BUCKET_NAME,
-            Key=obj["Key"]
-        )
+        if filename:
+            head = s3.head_object(
+                Bucket=LIARA_BUCKET_NAME,
+                Key=obj["Key"]
+            )
 
-        metadata = head.get("Metadata", {})
+            metadata = head.get("Metadata", {})
 
-        files.append({
-            "filename": filename,
-            "title": metadata.get("title", ""),
-            "date": metadata.get("date", ""),
-            "type": metadata.get("type", "")
-        })
+            files.append({
+                "filename": filename,
+                "title": metadata.get("title", ""),
+                "date": metadata.get("date", ""),
+                "type": metadata.get("type", "")
+            })
 
     return jsonify({
         "patient_code": patient_code,
