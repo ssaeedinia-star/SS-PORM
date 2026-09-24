@@ -167,7 +167,7 @@ def upload_file(patient_code):
     if not file or not file.filename:
         return jsonify({"error": "No file selected"}), 400
 
-            patient_code_safe = secure_filename(patient_code)
+    patient_code_safe = secure_filename(patient_code)
     filename = secure_filename(file.filename)
     file_title = request.form.get("title", "").strip()
     file_date = request.form.get("date", "").strip()
