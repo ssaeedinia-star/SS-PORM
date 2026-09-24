@@ -174,6 +174,9 @@ def upload_file(patient_code):
     filename = secure_filename(file.filename)
     file_title = request.form.get("title", "").strip()
     file_date = request.form.get("date", "").strip()
+    persian_digits = "۰۱۲۳۴۵۶۷۸۹"
+english_digits = "0123456789"
+file_date = file_date.translate(str.maketrans(persian_digits, english_digits))
     file_type = request.form.get("type", "").strip()
     file_stage = request.form.get("stage", "").strip()
     object_key = f"{patient_code_safe}/{filename}"
