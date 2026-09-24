@@ -170,8 +170,9 @@ def upload_file(patient_code):
     if not file or not file.filename:
         return jsonify({"error": "No file selected"}), 400
 
-     patient_code_safe = secure_filename(patient_code)
+    patient_code_safe = secure_filename(patient_code)
     filename = secure_filename(file.filename)
+
     file_title = request.form.get("title", "").strip()
     file_date = request.form.get("date", "").strip()
 
@@ -183,6 +184,7 @@ def upload_file(patient_code):
 
     file_type = request.form.get("type", "").strip()
     file_stage = request.form.get("stage", "").strip()
+
     object_key = f"{patient_code_safe}/{filename}"
 
     s3.upload_fileobj(
@@ -190,13 +192,13 @@ def upload_file(patient_code):
         LIARA_BUCKET_NAME,
         object_key,
         ExtraArgs={
-    "ContentType": file.content_type or "application/octet-stream",
-    "Metadata": {
-        "title": file_title,
-        "date": file_date,
-        "type": file_type,
-        "stage": file_stage
-    }
+            "ContentType": file.content_type or "application/octet-stream",
+            "Metadata": {
+                "title": file_title,
+                "date": file_date,
+                "type": file_type,
+                "stage": file_stage
+            }
         }
     )
 
