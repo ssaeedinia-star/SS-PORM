@@ -3,7 +3,7 @@ from functools import wraps
 import boto3
 from botocore.config import Config
 from werkzeug.utils import secure_filename
-from flask import Flask, request, jsonify, send_from_directory, redirect, Response, session 
+from flask import Flask, request, jsonify, render_template,send_from_directory, redirect, Response, session 
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -154,6 +154,9 @@ def health():
         "status": "ok",
         "service": "SS-PORM"
     })
+@app.route("/upload")
+def upload_page():
+    return render_template("upload.html")
 
 
 @app.route("/api/upload/<patient_code>", methods=["POST"])
