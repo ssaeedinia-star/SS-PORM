@@ -252,6 +252,41 @@ def get_patient_file(patient_code, filename):
         return jsonify({"error": str(e)}), 404
 
 
+@app.route("/patient/<patient_code>")
+@login_required
+def patient_profile(patient_code):
+    patient_code_safe = secure_filename(patient_code)
+
+    response = s3.list_objects_v2(
+        Bucket=LIARA_BUCKET_NAME,
+        Prefix=f"{patient_code_safe}/"
+    )
+
+    files = []
+
+    for obj in response.get("Contents", []):
+        filename = obj["Key"][len(patient_code_safe) + 1:]
+
+        if filename:
+            head = s3.head_object(
+                Bucket=LIARA_BUCKET_NAME,
+                Key=obj["Key"]
+            )
+
+            metadata = head.get("Metadata", {})
+
+            files.append({
+                "filename": filename,
+                "title": metadata.get("title", ""),
+                "date": metadata.get("date", ""),
+                "type": metadata.get("type", "")
+            })
+
+    return render_template(
+        "patient.html",
+        patient_code=patient_code,
+        files=files
+    )
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
