@@ -175,6 +175,7 @@ def upload_file(patient_code):
     file_title = request.form.get("title", "").strip()
     file_date = request.form.get("date", "").strip()
     file_type = request.form.get("type", "").strip()
+    file_stage = request.form.get("stage", "").strip()
     object_key = f"{patient_code_safe}/{filename}"
 
     s3.upload_fileobj(
@@ -186,7 +187,8 @@ def upload_file(patient_code):
     "Metadata": {
         "title": file_title,
         "date": file_date,
-        "type": file_type
+        "type": file_type,
+        "stage": file_stage
     }
         }
     )
