@@ -158,21 +158,48 @@
 
 
             <div class="filename">
+    نام فایل:
+    {{ file.filename }}
+</div>
 
-                نام فایل:
-                {{ file.filename }}
+{% set ext = file.filename.rsplit('.', 1)[-1].lower() %}
 
-            </div>
+{% if ext in ['jpg', 'jpeg', 'png', 'webp', 'gif'] %}
 
+    <a href="/api/files/{{ patient_code }}/{{ file.filename }}"
+       target="_blank">
+        <img
+          src="/api/files/{{ patient_code }}/{{ file.filename }}"
+          alt="{{ file.title or 'تصویر بیمار' }}"
+          loading="lazy"
+          style="
+            width:100%;
+            max-width:420px;
+            max-height:320px;
+            object-fit:contain;
+            margin:15px 0;
+            border-radius:10px;
+            border:1px solid #ddd;
+          ">
+    </a>
 
-            <a class="button"
-               href="/api/files/{{ patient_code }}/{{ file.filename }}"
-               target="_blank">
+    <br>
 
-                مشاهده / دانلود فایل
+    <a class="button"
+       href="/api/files/{{ patient_code }}/{{ file.filename }}"
+       target="_blank">
+       مشاهده تصویر در اندازه کامل
+    </a>
 
-            </a>
+{% else %}
 
+    <a class="button"
+       href="/api/files/{{ patient_code }}/{{ file.filename }}"
+       target="_blank">
+       مشاهده / دانلود فایل
+    </a>
+
+{% endif %}
         </div>
 
         {% endfor %}
