@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SS-PORM | Patient File Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f4f6f8;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #1769aa;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+<div class="card">
+
+    <h2>SS-PORM</h2>
+    <p>Patient Imaging & Document Upload</p>
+
+    <form id="uploadForm">
+
+        <label>Patient Code</label>
+        <input type="text" id="patientCode" required>
+
+        <label>File Title</label>
+        <input type="text" id="title"
+               placeholder="e.g. Pre-op Lumbar MRI">
+
+        <label>Date</label>
+        <input type="date" id="date">
+
+        <label>File Type</label>
+        <select id="type">
+            <option value="X-ray">X-ray</option>
+            <option value="CT">CT Scan</option>
+            <option value="MRI">MRI</option>
+            <option value="Clinical Photo">Clinical Photo</option>
+            <option value="Document">Document</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label>Select File</label>
+        <input type="file" id="file" required>
+
+        <button type="submit">Upload File</button>
+
+    </form>
+
+    <p id="status"></p>
+
+</div>
+
+<script>
+document.getElementById("uploadForm").addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const patientCode = document.getElementById("patientCode").value.trim();
+    const file = document.getElementById("file").files[0];
+
+    if (!patientCode || !file) {
+        alert("Patient code and file are required.");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("title", document.getElementById("title").value);
+    formData.append("date", document.getElementById("date").value);
+    formData.append("type", document.getElementById("type").value);
+
+    const status = document.getElementById("status");
+    status.innerText = "Uploading...";
+
+    try {
+
+        const response = await fetch(
+            "/api/upload/" + encodeURIComponent(patientCode),
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const result = await response.json();
+
+        if (response.ok) {
+            status.innerText = "✅ File uploaded successfully";
+        } else {
+            status.innerText = "❌ " + (result.error || "Upload failed");
+        }
+
+    } catch (error) {
+        status.innerText = "❌ Connection error";
+    }
+
+});
+</script>
+
+</body>
+</html>
