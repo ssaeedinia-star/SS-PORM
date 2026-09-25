@@ -15,6 +15,27 @@
     return o;
   }
 
+  function clearMainFormAfterSave(){
+    const f=document.getElementById('f');
+    if(!f)return;
+    f.reset();
+    try{sessionStorage.removeItem('ssporm_main_form_draft_v1');}catch(_){}
+
+    // Re-run the page's existing calculators/UI listeners after reset.
+    for(const el of f.querySelectorAll('input,select,textarea')){
+      try{el.dispatchEvent(new Event('input',{bubbles:true}));}catch(_){}
+      try{el.dispatchEvent(new Event('change',{bubbles:true}));}catch(_){}
+    }
+
+    // Clear derived/read-only displays that may not be covered by listeners.
+    const bmi=document.getElementById('bmi'); if(bmi)bmi.textContent='—';
+    const mfi=document.getElementById('mfi'); if(mfi)mfi.textContent='0.00';
+    const mfic=document.getElementById('mfic'); if(mfic)mfic.textContent='0';
+    const loadStatus=document.getElementById('loadStatus'); if(loadStatus)loadStatus.textContent='';
+    const patientFiles=document.getElementById('patientFiles'); if(patientFiles){patientFiles.innerHTML='';patientFiles.style.display='none';}
+    try{window.scrollTo({top:0,behavior:'smooth'});}catch(_){window.scrollTo(0,0);}
+  }
+
   window.savePatient=async function(){
     const o=collectForm();
     const s=document.getElementById('saveStatus'),b=document.getElementById('saveBtn');
@@ -34,7 +55,7 @@
       if(r.status===401)throw new Error('نشست ورود منقضی شده؛ یک‌بار خارج و دوباره وارد شوید.');
       if(!r.ok)throw new Error(d.error||('HTTP '+r.status));
       s.textContent='✓ اطلاعات بیمار با موفقیت ذخیره شد. ردیف پرونده: '+(d.row_number||'—');
-      try{sessionStorage.removeItem('ssporm_main_form_draft_v1');}catch(_){}
+      clearMainFormAfterSave();
       if(typeof window.refreshRecordNumber==='function')await window.refreshRecordNumber();
       if(typeof window.listPatients==='function')await window.listPatients();
     }catch(e){
