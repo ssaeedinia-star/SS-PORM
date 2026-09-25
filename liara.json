@@ -1,3 +1,5 @@
 {
-  "platform": "docker"
+  "platform": "docker",
+  "app": "ss-porm",
+  "port": 3000
 }
