@@ -74,8 +74,10 @@ FORM_DRAFT_UI = r'''
 <script>
 (function(){
  const KEY='ssporm_main_form_draft_v1';
+ let suppressSnapshot=false;
  function form(){return document.getElementById('f')}
  function snapshot(){
+   if(suppressSnapshot)return;
    const f=form(); if(!f)return;
    const data={};
    f.querySelectorAll('input[name],select[name],textarea[name]').forEach(function(el){
@@ -104,12 +106,28 @@ FORM_DRAFT_UI = r'''
    f.dispatchEvent(new Event('input',{bubbles:true}));
    f.dispatchEvent(new Event('change',{bubbles:true}));
  }
+ function clearActivePatient(){
+   suppressSnapshot=true;
+   try{sessionStorage.removeItem(KEY)}catch(e){}
+   const f=form(); if(f)f.reset();
+   ['bmi','mfi','mfic','modqScore','odi'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=id==='mfi'?'0.00':id==='mfic'?'0':'—';});
+   var rn=document.getElementById('recordNumberValue');if(rn)rn.textContent='—';
+   var ls=document.getElementById('loadStatus');if(ls)ls.textContent='';
+   var ss=document.getElementById('saveStatus');if(ss){ss.textContent='';ss.style.display='none';}
+   setTimeout(function(){suppressSnapshot=false},0);
+ }
  function install(){
    const f=form(); if(!f)return;
    restore();
    f.addEventListener('input',snapshot,true); f.addEventListener('change',snapshot,true);
-   const old=window.openPatientProfile;
-   window.openPatientProfile=function(){snapshot(); return old?old.apply(this,arguments):undefined};
+   const oldOpen=window.openPatientProfile;
+   window.openPatientProfile=function(){snapshot(); return oldOpen?oldOpen.apply(this,arguments):undefined};
+   const oldLogout=window.doLogout;
+   window.doLogout=async function(){
+     clearActivePatient();
+     try{return oldLogout?await oldLogout.apply(this,arguments):undefined}
+     finally{try{sessionStorage.removeItem(KEY)}catch(e){}}
+   };
  }
  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install):install();
  window.addEventListener('pageshow',function(){setTimeout(restore,0)});
