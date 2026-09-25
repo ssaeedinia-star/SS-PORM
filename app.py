@@ -51,7 +51,7 @@ JS_NULL_FIX = r'''
    [['modq_n','span'],['modq_score','span'],['odi_hidden','input']].forEach(function(x){
      if(document.getElementById(x[0]))return;
      var e=document.createElement(x[1]); e.id=x[0]; e.style.display='none';
-     if(x[0]==='odi_hidden'){e.type='hidden'; e.name='odi_legacy_compat';}
+     if(x[0]==='odi_hidden'){e.type='hidden'; e.name='legacy_compat_score';}
      f.appendChild(e);
    });
  }
@@ -70,7 +70,7 @@ def inject_prom_ui(response):
             injection=''
             if 'prom-score-wrap' not in html:
                 injection += QUESTIONNAIRE_UI
-            if 'odi_legacy_compat' not in html:
+            if 'legacy_compat_score' not in html:
                 injection += JS_NULL_FIX
             if injection:
                 html=html.replace('</body>',injection+'</body>')
