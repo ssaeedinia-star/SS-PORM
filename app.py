@@ -22,10 +22,32 @@ MJOA_UI = r'''
    const submit=[...f.querySelectorAll('button')].find(b=>(b.textContent||'').includes('ذخیره بیمار'));
    if(submit&&submit.closest('.card')) f.insertBefore(card,submit.closest('.card')); else f.appendChild(card);
    card.querySelectorAll('.mjoa-open').forEach(b=>b.onclick=()=>openMjoa(b.dataset.key));
-   periods.forEach(p=>{try{const s=JSON.parse(localStorage.getItem('ssporm_mjoa_'+p[0])||'{}');if(s.score!==undefined&&s.score!==null)document.getElementById('mjoa_final_'+p[0]).value=s.score}catch(e){}});
+   periods.forEach(p=>{try{const s=JSON.parse(localStorage.getItem('ssporm_mjoa_'+p[0])||'{}');const x=document.getElementById('mjoa_final_'+p[0]);if(x&&s.score!==undefined&&s.score!==null)x.value=s.score}catch(e){}});
  }
  window.addEventListener('message',function(e){if(e.origin!==location.origin||!e.data||e.data.type!=='ssporm-mjoa')return;const x=document.getElementById('mjoa_final_'+e.data.key);if(x&&e.data.score!==null)x.value=e.data.score});
  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install):install();setTimeout(install,800);
+})();
+</script>
+'''
+
+# The legacy calc() function in index.html still references MODQ elements that are
+# intentionally removed by the unified questionnaire UI. Keep invisible compatibility
+# targets so input events cannot throw "Cannot set properties of null".
+JS_NULL_FIX = r'''
+<script>
+(function(){
+ function ensureCompat(){
+   var f=document.getElementById('f'); if(!f)return;
+   [['modq_n','span'],['modq_score','span'],['odi_hidden','input']].forEach(function(x){
+     if(document.getElementById(x[0]))return;
+     var e=document.createElement(x[1]); e.id=x[0]; e.style.display='none';
+     if(x[0]==='odi_hidden'){e.type='hidden'; e.name='odi_legacy_compat';}
+     f.appendChild(e);
+   });
+ }
+ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',ensureCompat):ensureCompat();
+ setTimeout(ensureCompat,900);
+ document.addEventListener('input',function(){ensureCompat();},true);
 })();
 </script>
 '''
@@ -35,8 +57,13 @@ def inject_mjoa(response):
     try:
         if response.mimetype == 'text/html' and response.status_code == 200 and request_path_is_home():
             html=response.get_data(as_text=True)
+            injection=''
             if 'mjoaUnifiedCard' not in html:
-                html=html.replace('</body>',MJOA_UI+'</body>')
+                injection += MJOA_UI
+            if 'odi_legacy_compat' not in html:
+                injection += JS_NULL_FIX
+            if injection:
+                html=html.replace('</body>',injection+'</body>')
                 response.set_data(html)
                 response.headers['Content-Length']=str(len(response.get_data()))
     except Exception:
