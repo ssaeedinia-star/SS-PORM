@@ -5,6 +5,20 @@
     try{return text?JSON.parse(text):{};}catch(e){return {error:text||('HTTP '+response.status)};}
   }
 
+  function clearPatientForm(){
+    const f=document.getElementById('f');
+    try{sessionStorage.removeItem('ssporm_main_form_draft_v1');}catch(e){}
+    if(f)f.reset();
+    ['bmi','mfi','mfic','modqScore','odi'].forEach(function(id){
+      const e=document.getElementById(id);
+      if(e)e.textContent=id==='mfi'?'0.00':id==='mfic'?'0':'—';
+    });
+    document.querySelectorAll('.prom-score-wrap input,.modq-summary input').forEach(function(el){el.value='';});
+    const rn=document.getElementById('recordNumberValue'); if(rn)rn.textContent='—';
+    const ls=document.getElementById('loadStatus'); if(ls)ls.textContent='';
+    const pf=document.getElementById('patientFiles'); if(pf){pf.innerHTML='';pf.style.display='none';}
+  }
+
   window.savePatient=async function(){
     const f=document.getElementById('f'), o={};
     if(!f)return;
@@ -32,9 +46,10 @@
       });
       const d=await safeJson(r);
       if(!r.ok)throw new Error(d.error||('HTTP '+r.status));
-      try{sessionStorage.removeItem('ssporm_main_form_draft_v1');}catch(e){}
-      if(s)s.textContent='✓ اطلاعات بیمار با موفقیت در سرور ذخیره شد.';
+      clearPatientForm();
       if(typeof window.refreshRecordNumber==='function')await window.refreshRecordNumber();
+      if(typeof window.listPatients==='function')await window.listPatients();
+      if(s){s.style.display='block';s.textContent='✓ اطلاعات بیمار با موفقیت ذخیره شد. فرم برای بیمار بعدی آماده است.';}
     }catch(e){
       if(s)s.textContent='ذخیره انجام نشد: '+e.message;
     }finally{
