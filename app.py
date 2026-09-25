@@ -34,11 +34,19 @@ QUESTIONNAIRE_UI = r'''
    inp.replaceWith(wrap);wrap.querySelector('button').onclick=function(){openQ(type,key)};
    try{const s=JSON.parse(localStorage.getItem('ssporm_'+type+'_'+key)||'{}');const x=document.getElementById(type+'_final_'+key);if(x&&s.score!==undefined&&s.score!==null)x.value=s.score}catch(e){}
  }
+ function removeStrayModq(){
+   const allowed=new Set(['odi','odi_3m','odi_6m','odi_12m','odi_24m']);
+   document.querySelectorAll('.modq-summary').forEach(function(w){
+     const inp=w.querySelector('input');
+     if(inp && !allowed.has(inp.name||'')) w.remove();
+   });
+ }
  function install(){
    Object.keys(labels).forEach(function(key){const inp=document.querySelector('input[name="'+key+'"]');if(inp)replaceOne(inp,key.indexOf('ndi_')===0?'ndi':'mjoa')});
+   removeStrayModq();
  }
  window.addEventListener('message',function(e){if(e.origin!==location.origin||!e.data)return;let type=e.data.type==='ssporm-ndi'?'ndi':e.data.type==='ssporm-mjoa'?'mjoa':null;if(!type)return;const x=document.getElementById(type+'_final_'+e.data.key);if(x&&e.data.score!==null)x.value=e.data.score});
- document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install):install();setTimeout(install,800);
+ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install):install();setTimeout(install,800);setTimeout(removeStrayModq,1200);
 })();
 </script>
 '''
