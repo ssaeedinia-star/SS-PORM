@@ -117,6 +117,8 @@ FORM_DRAFT_UI = r'''
 </script>
 '''
 
+SAVE_FIX_UI = '<script src="/static/save-fix.js?v=1"></script>'
+
 @app.after_request
 def inject_prom_ui(response):
     try:
@@ -129,6 +131,8 @@ def inject_prom_ui(response):
                 injection += JS_NULL_FIX
             if 'ssporm_main_form_draft_v1' not in html:
                 injection += FORM_DRAFT_UI
+            if 'save-fix.js' not in html:
+                injection += SAVE_FIX_UI
             if injection:
                 html=html.replace('</body>',injection+'</body>')
                 response.set_data(html)
