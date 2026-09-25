@@ -135,7 +135,7 @@ FORM_DRAFT_UI = r'''
 </script>
 '''
 
-SAVE_FIX_UI = '<script src="/static/save-fix.js?v=1"></script>'
+SAVE_FIX_UI = '<script src="/static/save-fix.js?v=3"></script>'
 
 @app.after_request
 def inject_prom_ui(response):
