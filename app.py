@@ -70,6 +70,53 @@ JS_NULL_FIX = r'''
 </script>
 '''
 
+FORM_DRAFT_UI = r'''
+<script>
+(function(){
+ const KEY='ssporm_main_form_draft_v1';
+ function form(){return document.getElementById('f')}
+ function snapshot(){
+   const f=form(); if(!f)return;
+   const data={};
+   f.querySelectorAll('input[name],select[name],textarea[name]').forEach(function(el){
+     if(el.type==='file'||el.name==='legacy_compat_score')return;
+     if(el.type==='radio'){
+       if(el.checked)data[el.name]={t:'radio',v:el.value};
+     }else if(el.type==='checkbox'){
+       if(!data[el.name]||data[el.name].t!=='checkbox')data[el.name]={t:'checkbox',v:[]};
+       if(el.checked)data[el.name].v.push(el.value);
+     }else data[el.name]={t:'value',v:el.value};
+   });
+   try{sessionStorage.setItem(KEY,JSON.stringify(data))}catch(e){}
+ }
+ function restore(){
+   const f=form(); if(!f)return;
+   let data; try{data=JSON.parse(sessionStorage.getItem(KEY)||'null')}catch(e){return}
+   if(!data)return;
+   Object.keys(data).forEach(function(name){
+     const item=data[name], els=f.querySelectorAll('[name="'+CSS.escape(name)+'"]');
+     els.forEach(function(el){
+       if(item.t==='radio')el.checked=(el.value===item.v);
+       else if(item.t==='checkbox')el.checked=Array.isArray(item.v)&&item.v.indexOf(el.value)>=0;
+       else if(el.type!=='file')el.value=item.v==null?'':item.v;
+     });
+   });
+   f.dispatchEvent(new Event('input',{bubbles:true}));
+   f.dispatchEvent(new Event('change',{bubbles:true}));
+ }
+ function install(){
+   const f=form(); if(!f)return;
+   restore();
+   f.addEventListener('input',snapshot,true); f.addEventListener('change',snapshot,true);
+   const old=window.openPatientProfile;
+   window.openPatientProfile=function(){snapshot(); return old?old.apply(this,arguments):undefined};
+ }
+ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install):install();
+ window.addEventListener('pageshow',function(){setTimeout(restore,0)});
+})();
+</script>
+'''
+
 @app.after_request
 def inject_prom_ui(response):
     try:
@@ -80,6 +127,8 @@ def inject_prom_ui(response):
                 injection += QUESTIONNAIRE_UI
             if 'legacy_compat_score' not in html:
                 injection += JS_NULL_FIX
+            if 'ssporm_main_form_draft_v1' not in html:
+                injection += FORM_DRAFT_UI
             if injection:
                 html=html.replace('</body>',injection+'</body>')
                 response.set_data(html)
