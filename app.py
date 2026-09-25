@@ -135,6 +135,55 @@ FORM_DRAFT_UI = r'''
 </script>
 '''
 
+TSCORE_UI = r'''
+<style>
+.tscore-wrap{display:flex;gap:8px;align-items:stretch}
+.tscore-wrap input{flex:1;min-width:0}
+.tscore-sign{width:58px;flex:0 0 58px;font-size:24px;font-weight:700;background:#eef2f3;border:1px solid #bbb}
+.tscore-hint{font-size:12px;color:#666;margin-top:5px}
+</style>
+<script>
+(function(){
+ function normalize(v){
+   const fa='۰۱۲۳۴۵۶۷۸۹', ar='٠١٢٣٤٥٦٧٨٩';
+   return String(v||'').replace(/[۰-۹]/g,c=>fa.indexOf(c)).replace(/[٠-٩]/g,c=>ar.indexOf(c)).replace(/،/g,'.').replace(/,/g,'.').replace(/−/g,'-').trim();
+ }
+ function install(){
+   const inp=document.querySelector('input[name="osteo_min_tscore"]');
+   if(!inp||inp.dataset.tscoreFixed)return;
+   inp.dataset.tscoreFixed='1';
+   inp.type='text';
+   inp.inputMode='text';
+   inp.autocomplete='off';
+   inp.placeholder='مثال: -2.5';
+   inp.setAttribute('pattern','^-?[0-9]+([.][0-9]+)?$');
+   const wrap=document.createElement('div');wrap.className='tscore-wrap';
+   inp.parentNode.insertBefore(wrap,inp);wrap.appendChild(inp);
+   const btn=document.createElement('button');btn.type='button';btn.className='tscore-sign';btn.textContent='−';btn.title='منفی/مثبت کردن T-score';
+   wrap.appendChild(btn);
+   const hint=document.createElement('div');hint.className='tscore-hint';hint.textContent='عدد منفی و اعشاری مجاز است؛ مثال: -2.5. دکمه − علامت عدد را تغییر می‌دهد.';
+   wrap.parentNode.insertBefore(hint,wrap.nextSibling);
+   btn.addEventListener('click',function(){
+     let v=normalize(inp.value);
+     if(!v){inp.value='-';inp.focus();return;}
+     inp.value=v.startsWith('-')?v.slice(1):'-'+v;
+     inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();
+   });
+   inp.addEventListener('blur',function(){
+     let v=normalize(inp.value); if(!v||v==='-'){if(v==='-')inp.value='';return;}
+     const n=Number(v);
+     if(!Number.isFinite(n)){inp.setCustomValidity('T-score را به صورت عدد وارد کنید؛ مثال: -2.5');return;}
+     if(n < -6 || n > 6){inp.setCustomValidity('T-score باید بین -6 و +6 باشد.');return;}
+     inp.setCustomValidity('');inp.value=String(n);
+   });
+   inp.addEventListener('input',function(){inp.setCustomValidity('')});
+ }
+ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install):install();
+ setTimeout(install,700);
+})();
+</script>
+'''
+
 SAVE_FIX_UI = '<script src="/static/save-fix.js?v=3"></script>'
 
 @app.after_request
@@ -149,6 +198,8 @@ def inject_prom_ui(response):
                 injection += JS_NULL_FIX
             if 'ssporm_main_form_draft_v1' not in html:
                 injection += FORM_DRAFT_UI
+            if 'tscore-wrap' not in html:
+                injection += TSCORE_UI
             if 'save-fix.js' not in html:
                 injection += SAVE_FIX_UI
             if injection:
