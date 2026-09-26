@@ -18,21 +18,30 @@ def serve_cervical_module():
 @app.route('/module')
 def serve_generic_module():
  r=send_from_directory('/app','modules.html',mimetype='text/html');r.headers['Cache-Control']='no-store';return r
-DIRECT_MODULE_UI=r'''<style>.diseaseModule{border:2px solid #1769aa;background:#f4f9ff}.diseaseModule button{background:#1769aa;color:#fff;width:100%;margin-top:8px}#patientPhoneDirect{margin-top:10px}</style><script>(function(){function install(){var f=document.getElementById('f');if(!f)return;var first=f.querySelector('.card');if(first&&!f.elements['patient_phone']&&!document.getElementById('patientPhoneDirect')){var p=document.createElement('div');p.id='patientPhoneDirect';p.className='row';p.innerHTML='<div><label>شماره تماس بیمار</label><input type="tel" name="patient_phone" inputmode="tel" autocomplete="tel" placeholder="مثال: 0912xxxxxxx"></div>';first.appendChild(p)}var mods=[['cervical','📁 ماژول بیماران گردنی','معاینه گردن، NDI، mJOA و جراحی اختصاصی گردن'],['thoracolumbar','📁 ماژول Thoracolumbar / Lumbar','معاینه، ODI/MODQ و جراحی توراکولومبار/لومبار'],['deformity','📁 ماژول Deformity','Alignment، پارامترهای دفورمیتی و جراحی اصلاح دفورمیتی'],['asd','📁 ماژول ASD / Revision','Adjacent segment disease، سابقه عمل و Revision'],['tumor','📁 ماژول Tumor','اطلاعات اختصاصی تومور و جراحی'],['trauma','📁 ماژول Trauma','اطلاعات اختصاصی تروما و جراحی']];var anchor=first;mods.forEach(function(m){var id=m[0]+'ModuleDirect';if(document.getElementById(id)){anchor=document.getElementById(id);return}var c=document.createElement('div');c.id=id;c.className='card diseaseModule';c.innerHTML='<h2>'+m[1]+'</h2><p class="small">'+m[2]+'</p><button type="button">باز کردن ماژول</button>';anchor.insertAdjacentElement('afterend',c);anchor=c;c.querySelector('button').onclick=function(){var e=f.elements['study_id'],code=e?String(e.value||'').trim():'';if(!code){alert('ابتدا کد بیمار / کد مطالعه را وارد کنید.');return}var url=m[0]==='cervical'?'/cervical?patient_code='+encodeURIComponent(code):'/module?type='+m[0]+'&patient_code='+encodeURIComponent(code);window.open(url,'ssporm_'+m[0]+'_'+code,'width=900,height=900,scrollbars=yes')}});
-// Items now owned by dedicated modules are hidden from the long main form.
-document.querySelectorAll('.card').forEach(function(x){if(x.classList.contains('diseaseModule'))return;var h=x.querySelector('h2');if(!h)return;var t=(h.textContent||'').toLowerCase();if(t.indexOf('patient-reported outcome')>=0)x.style.display='none'});
-['ndi_baseline','mjoa_baseline','ndi_3m','mjoa_3m','ndi_6m','mjoa_6m','ndi_12m','mjoa_12m','ndi_24m','mjoa_24m'].forEach(function(n){var e=f.elements[n];if(e){var w=e.closest('.prom-score-wrap')||e.parentElement;if(w)w.style.display='none'}});
-// Hide module-specific subsections of the general surgery card, while keeping generic procedure fields available.
-var surgeryHeaders=['Anterior Cervical Surgery','Posterior Cervical Surgery','Interbody','Decompression / Osteotomy'];document.querySelectorAll('.card h3').forEach(function(h){var t=(h.textContent||'').trim();if(surgeryHeaders.indexOf(t)<0)return;var n=h;while(n){var next=n.nextElementSibling;n.style.display='none';if(next&&next.tagName==='H3')break;n=next}});
-// Deformity/alignment values are now in the Deformity module.
-document.querySelectorAll('.card').forEach(function(x){var h=x.querySelector('h2');if(h&&(h.textContent||'').trim()==='استخوان و Alignment'){x.querySelectorAll('[name="pi"],[name="pt"],[name="ll"],[name="pill"],[name="sva"],[name="t1pa"]').forEach(function(e){var w=e.parentElement;if(w)w.style.display='none'})}});
-}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install):install();setTimeout(install,300);setTimeout(install,1000)})();</script>'''
+
+MODULE_CARDS=r'''<style>.diseaseModule{border:2px solid #1769aa;background:#f4f9ff}.diseaseModule button{background:#1769aa;color:#fff;width:100%;margin-top:8px}.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:520px){.module-grid{grid-template-columns:1fr}}#patientPhoneDirect{margin-top:10px}</style>
+<div id="allDiseaseModulesDirect" class="card diseaseModule"><h2>📁 ماژول‌های اختصاصی بیمار</h2><p class="small">فقط ماژول مرتبط با بیمار را باز و تکمیل کنید.</p><div class="module-grid">
+<button type="button" onclick="openSSModule('cervical')">گردنی — Cervical</button>
+<button type="button" onclick="openSSModule('thoracolumbar')">Thoracolumbar / Lumbar</button>
+<button type="button" onclick="openSSModule('deformity')">Deformity</button>
+<button type="button" onclick="openSSModule('asd')">ASD / Revision</button>
+<button type="button" onclick="openSSModule('tumor')">Tumor</button>
+<button type="button" onclick="openSSModule('trauma')">Trauma</button>
+</div></div>
+<script>
+function openSSModule(type){var f=document.getElementById('f'),e=f&&f.elements['study_id'],code=e?String(e.value||'').trim():'';if(!code){alert('ابتدا کد بیمار / کد مطالعه را وارد کنید.');return}var url=type==='cervical'?'/cervical?patient_code='+encodeURIComponent(code):'/module?type='+encodeURIComponent(type)+'&patient_code='+encodeURIComponent(code);window.open(url,'ssporm_'+type+'_'+code,'width=900,height=900,scrollbars=yes')}
+(function(){function cleanMain(){var f=document.getElementById('f');if(!f)return;var first=f.querySelector('.card');if(first&&!f.elements['patient_phone']&&!document.getElementById('patientPhoneDirect')){var p=document.createElement('div');p.id='patientPhoneDirect';p.innerHTML='<label>شماره تماس بیمار</label><input type="tel" name="patient_phone" inputmode="tel" autocomplete="tel" placeholder="مثال: 0912xxxxxxx">';first.appendChild(p)}document.querySelectorAll('.card').forEach(function(x){if(x.id==='allDiseaseModulesDirect')return;var h=x.querySelector('h2');if(!h)return;var t=(h.textContent||'').toLowerCase();if(t.indexOf('patient-reported outcome')>=0)x.style.display='none'});['ndi_baseline','mjoa_baseline','ndi_3m','mjoa_3m','ndi_6m','mjoa_6m','ndi_12m','mjoa_12m','ndi_24m','mjoa_24m'].forEach(function(n){var e=f.elements[n];if(e){var w=e.closest('.prom-score-wrap')||e.parentElement;if(w)w.style.display='none'}})}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',cleanMain):cleanMain();setTimeout(cleanMain,800)})();
+</script>'''
+
 @app.after_request
-def inject_ui_patch(response):
+def inject_modules(response):
  if request.path=='/' and response.content_type and 'text/html' in response.content_type:
   try:
    html=response.get_data(as_text=True)
-   if 'thoracolumbarModuleDirect' not in html: html=html.replace('</body>',DIRECT_MODULE_UI+'</body>')
+   if 'allDiseaseModulesDirect' not in html:
+    marker="<div class='card'><h2>بیماری‌های همراه و mFI-5</h2>"
+    if marker in html: html=html.replace(marker,MODULE_CARDS+marker,1)
+    else: html=html.replace('</form>',MODULE_CARDS+'</form>',1)
    response.set_data(html);response.headers['Content-Length']=str(len(response.get_data()))
   except Exception: pass
   response.headers['Cache-Control']='no-store, no-cache, must-revalidate, max-age=0';response.headers['Pragma']='no-cache';response.headers['Expires']='0'
