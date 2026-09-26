@@ -1,0 +1,19 @@
+(function(){
+  function esc(v){return String(v||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function code(){var f=document.getElementById('f');var e=f&&f.elements&&f.elements['study_id'];return e?String(e.value||'').trim():'';}
+  function openCervical(){var c=code();if(!c){alert('ابتدا کد بیمار / کد مطالعه را وارد کنید.');return;}window.open('/cervical?patient_code='+encodeURIComponent(c),'ssporm_cervical_'+c,'width=850,height=900,scrollbars=yes');}
+  function install(){
+    var f=document.getElementById('f');if(!f||document.getElementById('cervicalModuleCard'))return;
+    var first=f.querySelector('.card');
+    if(first&&!f.elements['patient_phone']){
+      var phone=document.createElement('div');phone.className='row';phone.innerHTML='<div><label>شماره تماس بیمار</label><input type="tel" name="patient_phone" inputmode="tel" autocomplete="tel" placeholder="مثال: 0912xxxxxxx"></div>';
+      var pname=first.querySelector('input[name="patient_name"]');if(pname){var anchor=pname.closest('.row')||pname;anchor.insertAdjacentElement('afterend',phone);}else first.appendChild(phone);
+    }
+    var card=document.createElement('div');card.id='cervicalModuleCard';card.className='card';card.innerHTML='<h2>📁 ماژول بیماران گردنی</h2><p class="small">معاینه اختصاصی گردن، NDI و mJOA در پوشه اختصاصی بیمار ثبت می‌شوند.</p><button type="button" id="openCervicalModule">باز کردن پوشه بیماران گردنی</button><div class="out" style="margin-top:10px">NDI: <b id="cervicalNdiSummary">—</b> &nbsp; | &nbsp; mJOA: <b id="cervicalMjoaSummary">—</b></div>';
+    if(first)first.insertAdjacentElement('afterend',card);else f.insertBefore(card,f.firstChild);
+    document.getElementById('openCervicalModule').onclick=openCervical;
+    document.querySelectorAll('.card').forEach(function(x){if(x===card)return;var h=x.querySelector('h2');if(!h)return;var t=(h.textContent||'').toLowerCase();if(t.indexOf('ndi')>=0||t.indexOf('mjoa')>=0)x.style.display='none';});
+    window.addEventListener('message',function(e){if(e.origin!==location.origin||!e.data)return;if(e.data.type==='ssporm-cervical'){if(e.data.ndi!=null)document.getElementById('cervicalNdiSummary').textContent=e.data.ndi;if(e.data.mjoa!=null)document.getElementById('cervicalMjoaSummary').textContent=e.data.mjoa;}});
+  }
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install):install();setTimeout(install,700);
+})();
