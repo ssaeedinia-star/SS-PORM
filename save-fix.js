@@ -15,19 +15,29 @@
     return o;
   }
 
+  function hideMainSurgicalPlan(){
+    const f=document.getElementById('f');
+    if(!f)return;
+    f.querySelectorAll('.card').forEach(function(card){
+      const h=card.querySelector('h2');
+      if(!h)return;
+      const title=(h.textContent||'').trim();
+      if(title.indexOf('برنامه جراحی')>=0){
+        card.style.display='none';
+        card.dataset.movedToDiseaseModules='1';
+      }
+    });
+  }
+
   function clearMainFormAfterSave(){
     const f=document.getElementById('f');
     if(!f)return;
     f.reset();
     try{sessionStorage.removeItem('ssporm_main_form_draft_v1');}catch(_){}
-
-    // Re-run the page's existing calculators/UI listeners after reset.
     for(const el of f.querySelectorAll('input,select,textarea')){
       try{el.dispatchEvent(new Event('input',{bubbles:true}));}catch(_){}
       try{el.dispatchEvent(new Event('change',{bubbles:true}));}catch(_){}
     }
-
-    // Clear derived/read-only displays that may not be covered by listeners.
     const bmi=document.getElementById('bmi'); if(bmi)bmi.textContent='—';
     const mfi=document.getElementById('mfi'); if(mfi)mfi.textContent='0.00';
     const mfic=document.getElementById('mfic'); if(mfic)mfic.textContent='0';
@@ -45,10 +55,7 @@
     b.disabled=true;s.textContent='در حال ذخیره...';
     try{
       const r=await fetch('/api/patients',{
-        method:'POST',
-        credentials:'same-origin',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(o)
+        method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)
       });
       let d={};
       try{d=await r.json();}catch(_){throw new Error('پاسخ نامعتبر از سرور (HTTP '+r.status+')');}
@@ -58,13 +65,10 @@
       clearMainFormAfterSave();
       if(typeof window.refreshRecordNumber==='function')await window.refreshRecordNumber();
       if(typeof window.listPatients==='function')await window.listPatients();
-    }catch(e){
-      s.textContent='ذخیره انجام نشد: '+e.message;
-    }finally{b.disabled=false;}
+    }catch(e){s.textContent='ذخیره انجام نشد: '+e.message;}
+    finally{b.disabled=false;}
   };
 
-  // The legacy page still points patient/file requests to the old Render backend.
-  // Override file-list loading so every request stays on the current authenticated Liara origin.
   window.loadPatientFiles=async function(patientCode){
     const box=document.getElementById('patientFiles'); if(!box)return;
     try{
@@ -82,4 +86,7 @@
       box.style.display='block';
     }catch(e){box.innerHTML='خطا در دریافت فایل‌ها: '+e.message;box.style.display='block';}
   };
+
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',hideMainSurgicalPlan):hideMainSurgicalPlan();
+  setTimeout(hideMainSurgicalPlan,800);
 })();
