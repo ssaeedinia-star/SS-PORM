@@ -30,18 +30,24 @@ MODULE_CARDS=r'''<style>.diseaseModule{border:2px solid #1769aa;background:#f4f9
 </div></div>
 <script>
 function openSSModule(type){var f=document.getElementById('f'),e=f&&f.elements['study_id'],code=e?String(e.value||'').trim():'';if(!code){alert('ابتدا کد بیمار / کد مطالعه را وارد کنید.');return}var url=type==='cervical'?'/cervical?patient_code='+encodeURIComponent(code):'/module?type='+encodeURIComponent(type)+'&patient_code='+encodeURIComponent(code);window.open(url,'ssporm_'+type+'_'+code,'width=900,height=900,scrollbars=yes')}
-(function(){function cleanMain(){var f=document.getElementById('f');if(!f)return;var first=f.querySelector('.card');if(first&&!f.elements['patient_phone']&&!document.getElementById('patientPhoneDirect')){var p=document.createElement('div');p.id='patientPhoneDirect';p.innerHTML='<label>شماره تماس بیمار</label><input type="tel" name="patient_phone" inputmode="tel" autocomplete="tel" placeholder="مثال: 0912xxxxxxx">';first.appendChild(p)}document.querySelectorAll('.card').forEach(function(x){if(x.id==='allDiseaseModulesDirect')return;var h=x.querySelector('h2');if(!h)return;var t=(h.textContent||'').toLowerCase();if(t.indexOf('patient-reported outcome')>=0)x.style.display='none'});['ndi_baseline','mjoa_baseline','ndi_3m','mjoa_3m','ndi_6m','mjoa_6m','ndi_12m','mjoa_12m','ndi_24m','mjoa_24m'].forEach(function(n){var e=f.elements[n];if(e){var w=e.closest('.prom-score-wrap')||e.parentElement;if(w)w.style.display='none'}})}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',cleanMain):cleanMain();setTimeout(cleanMain,800)})();
+(function(){function cleanMain(){var f=document.getElementById('f');if(!f)return;var first=f.querySelector('.card');if(first&&!f.elements['patient_phone']&&!document.getElementById('patientPhoneDirect')){var p=document.createElement('div');p.id='patientPhoneDirect';p.innerHTML='<label>شماره تماس بیمار</label><input type="tel" name="patient_phone" inputmode="tel" autocomplete="tel" placeholder="مثال: 0912xxxxxxx">';first.appendChild(p)}document.querySelectorAll('.card').forEach(function(x){if(x.id==='allDiseaseModulesDirect')return;var h=x.querySelector('h2');if(!h)return;var t=(h.textContent||'').toLowerCase();if(t.indexOf('patient-reported outcome')>=0)x.style.display='none'});['ndi_baseline','mjoa_baseline','ndi_3m','mjoa_3m','ndi_6m','mjoa_6m','ndi_12m','mjoa_12m','ndi_24m','mjoa_24m'].forEach(function(n){var e=f.elements[n];if(e){var w=e.closest('.prom-score-wrap')||e.parentElement;if(w)w.style.display='none'}});var rev=null;document.querySelectorAll('.card h3').forEach(function(h){if((h.textContent||'').indexOf('در صورت Revision')>=0)rev=h});if(rev){var n=rev;while(n){var next=n.nextElementSibling;if(n!==rev&&n.tagName==='H3'&&(n.textContent||'').trim()==='Fusion / Instrumentation')break;n.style.display='none';n=next}}}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',cleanMain):cleanMain();setTimeout(cleanMain,800)})();
 </script>'''
+
+ASD_REVISION_PATCH=r'''<script>(function(){function addRevisionFields(){var q=new URLSearchParams(location.search);if(q.get('type')!=='asd')return;var f=document.getElementById('mf');if(!f||f.elements['prior_surgery_interval'])return;var count=f.elements['prior_spine_surgery_count'];if(!count)return;var box=count.closest('details');if(!box)return;var levels=f.elements['prior_surgery_levels'];var before=levels?levels.previousElementSibling:null;var extra=document.createElement('div');extra.id='asdRevisionExtra';extra.innerHTML='<label>تاریخ/فاصله از آخرین جراحی</label><input name="prior_surgery_interval" placeholder="مثال: 2 سال قبل"><label>نوع جراحی قبلی</label><select name="prior_surgery_type"><option></option><option>Decompression only</option><option>Discectomy</option><option>Anterior cervical fusion</option><option>Posterior fusion/instrumentation</option><option>Interbody fusion</option><option>Deformity correction / long fusion</option><option>Combined anterior + posterior</option><option>سایر / چند نوع</option></select>';
+if(before)box.insertBefore(extra,before);else box.appendChild(extra);var desc=f.elements['prior_surgery_description'];if(desc&&!f.elements['pelvic']){var pelvic=document.createElement('div');pelvic.innerHTML='<label>Pelvic fixation</label><select name="pelvic"><option>خیر</option><option>بله</option></select>';var ind=f.elements['revision_indication'];if(ind&&ind.nextSibling)box.insertBefore(pelvic,ind.nextSibling);else box.appendChild(pelvic)}}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addRevisionFields):addRevisionFields();setTimeout(addRevisionFields,300)})();</script>'''
 
 @app.after_request
 def inject_modules(response):
- if request.path=='/' and response.content_type and 'text/html' in response.content_type:
+ if response.content_type and 'text/html' in response.content_type:
   try:
    html=response.get_data(as_text=True)
-   if 'allDiseaseModulesDirect' not in html:
-    marker="<div class='card'><h2>بیماری‌های همراه و mFI-5</h2>"
-    if marker in html: html=html.replace(marker,MODULE_CARDS+marker,1)
-    else: html=html.replace('</form>',MODULE_CARDS+'</form>',1)
+   if request.path=='/':
+    if 'allDiseaseModulesDirect' not in html:
+     marker="<div class='card'><h2>بیماری‌های همراه و mFI-5</h2>"
+     if marker in html: html=html.replace(marker,MODULE_CARDS+marker,1)
+     else: html=html.replace('</form>',MODULE_CARDS+'</form>',1)
+   elif request.path=='/module' and request.args.get('type')=='asd' and 'asdRevisionExtra' not in html:
+    html=html.replace('</body>',ASD_REVISION_PATCH+'</body>',1)
    response.set_data(html);response.headers['Content-Length']=str(len(response.get_data()))
   except Exception: pass
   response.headers['Cache-Control']='no-store, no-cache, must-revalidate, max-age=0';response.headers['Pragma']='no-cache';response.headers['Expires']='0'
