@@ -15,13 +15,17 @@
     return o;
   }
 
-  function hideMainSurgicalPlan(){
+  function cleanMainForm(){
     const f=document.getElementById('f');
     if(!f)return;
     f.querySelectorAll('.card').forEach(function(card){
       const h=card.querySelector('h2');
       if(!h)return;
       const title=(h.textContent||'').trim();
+      if(title==='وضعیت ستون فقرات'){
+        card.remove();
+        return;
+      }
       if(title.indexOf('برنامه جراحی')>=0){
         card.style.display='none';
         card.dataset.movedToDiseaseModules='1';
@@ -87,6 +91,6 @@
     }catch(e){box.innerHTML='خطا در دریافت فایل‌ها: '+e.message;box.style.display='block';}
   };
 
-  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',hideMainSurgicalPlan):hideMainSurgicalPlan();
-  setTimeout(hideMainSurgicalPlan,800);
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',cleanMainForm):cleanMainForm();
+  setTimeout(cleanMainForm,800);
 })();
