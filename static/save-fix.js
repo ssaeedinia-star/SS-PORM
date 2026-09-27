@@ -5,6 +5,13 @@
     try{return text?JSON.parse(text):{};}catch(e){return {error:text||('HTTP '+response.status)};}
   }
 
+  function removeDuplicateSpineStatus(){
+    document.querySelectorAll('#f .card').forEach(function(card){
+      const h=card.querySelector('h2');
+      if(h && (h.textContent||'').trim()==='وضعیت ستون فقرات') card.remove();
+    });
+  }
+
   function clearPatientForm(){
     const f=document.getElementById('f');
     try{sessionStorage.removeItem('ssporm_main_form_draft_v1');}catch(e){}
@@ -73,4 +80,7 @@
       box.style.display='block';
     }catch(e){box.innerHTML='خطا در دریافت فایل‌ها: '+e.message;box.style.display='block';}
   };
+
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',removeDuplicateSpineStatus):removeDuplicateSpineStatus();
+  setTimeout(removeDuplicateSpineStatus,800);
 })();
