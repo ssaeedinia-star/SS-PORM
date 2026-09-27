@@ -10,6 +10,21 @@
     }
     return null;
   }
+  function makeLabsMedsCollapsible(f){
+    var card=cardByTitle(f,'آزمایش‌ها و داروهای مهم');
+    if(!card||card.dataset.collapsibleReady)return;
+    card.dataset.collapsibleReady='1';
+    var h=card.querySelector('h2');
+    var details=document.createElement('details');
+    details.className='labs-meds-folder';
+    var summary=document.createElement('summary');
+    summary.innerHTML='🧪💊 <b>آزمایش‌ها و داروهای مهم</b> <span class="small">Core / Extended</span>';
+    summary.style.cursor='pointer';summary.style.fontSize='20px';summary.style.padding='6px 0';
+    details.appendChild(summary);
+    var body=document.createElement('div');body.style.marginTop='12px';
+    Array.from(card.childNodes).forEach(function(n){if(n!==h)body.appendChild(n);});
+    details.appendChild(body);card.innerHTML='';card.appendChild(details);
+  }
   function reorderAssessmentSections(f){
     var base=cardByTitle(f,'مشخصات پایه');
     if(!base)return;
@@ -38,6 +53,7 @@
       window.addEventListener('message',function(e){if(e.origin!==location.origin||!e.data)return;if(e.data.type==='ssporm-cervical'){if(e.data.ndi!=null)document.getElementById('cervicalNdiSummary').textContent=e.data.ndi;if(e.data.mjoa!=null)document.getElementById('cervicalMjoaSummary').textContent=e.data.mjoa;}});
     }
     reorderAssessmentSections(f);
+    makeLabsMedsCollapsible(f);
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install):install();setTimeout(install,700);
 })();
