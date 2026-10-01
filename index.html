@@ -440,8 +440,7 @@
 </div>
 <div class='row'>
 <div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_3m'></div>
-<div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_3m'></div>
-<div><label>mJOA (0–18) — Myelopathy</label><input type='number' min='0' max='18' name='mjoa_3m'></div>
+<div class="promPair"><div><button class="qbtn" type="button" onclick="openPromQ('ndi','ndi_3m')">NDI — پیگیری ۳ ماه</button><div class="out">امتیاز NDI: <b id="score_ndi_3m">—</b></div></div><div><button class="qbtn" type="button" onclick="openPromQ('mjoa','mjoa_3m')">mJOA — پیگیری ۳ ماه</button><div class="out">امتیاز mJOA: <b id="score_mjoa_3m">—</b></div></div></div>
 <div><label>NRS درد کمر/گردن (0–10)</label><input type='number' min='0' max='10' name='axial_pain_3m'></div>
 <div><label>NRS درد اندام (0–10)</label><input type='number' min='0' max='10' name='limb_pain_3m'></div>
 <div><label>رضایت بیمار</label><select name='satisfaction_3m'><option></option><option>بسیار راضی</option><option>راضی</option><option>متوسط</option><option>ناراضی</option><option>بسیار ناراضی</option></select></div>
@@ -454,8 +453,7 @@
 </div>
 <div class='row'>
 <div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_6m'></div>
-<div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_6m'></div>
-<div><label>mJOA (0–18) — Myelopathy</label><input type='number' min='0' max='18' name='mjoa_6m'></div>
+<div class="promPair"><div><button class="qbtn" type="button" onclick="openPromQ('ndi','ndi_6m')">NDI — پیگیری ۶ ماه</button><div class="out">امتیاز NDI: <b id="score_ndi_6m">—</b></div></div><div><button class="qbtn" type="button" onclick="openPromQ('mjoa','mjoa_6m')">mJOA — پیگیری ۶ ماه</button><div class="out">امتیاز mJOA: <b id="score_mjoa_6m">—</b></div></div></div>
 <div><label>NRS درد کمر/گردن (0–10)</label><input type='number' min='0' max='10' name='axial_pain_6m'></div>
 <div><label>NRS درد اندام (0–10)</label><input type='number' min='0' max='10' name='limb_pain_6m'></div>
 <div><label>رضایت بیمار</label><select name='satisfaction_6m'><option></option><option>بسیار راضی</option><option>راضی</option><option>متوسط</option><option>ناراضی</option><option>بسیار ناراضی</option></select></div>
@@ -473,8 +471,7 @@
 
 <div class='row'>
   <div><label>ODI / MODQ (0-100)</label><input type='number' min='0' max='100' name='odi_12m'></div>
-<div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_12m'></div>
-<div><label>mJOA (0–18) — Myelopathy</label><input type='number' min='0' max='18' name='mjoa_12m'></div>
+<div class="promPair"><div><button class="qbtn" type="button" onclick="openPromQ('ndi','ndi_12m')">NDI — پیگیری ۱۲ ماه</button><div class="out">امتیاز NDI: <b id="score_ndi_12m">—</b></div></div><div><button class="qbtn" type="button" onclick="openPromQ('mjoa','mjoa_12m')">mJOA — پیگیری ۱۲ ماه</button><div class="out">امتیاز mJOA: <b id="score_mjoa_12m">—</b></div></div></div>
 <div><label>NRS درد کمر/گردن (0–10)</label><input type='number' min='0' max='10' name='axial_pain_12m'></div>
 <div><label>NRS درد اندام (0–10)</label><input type='number' min='0' max='10' name='limb_pain_12m'></div>
 <div><label>رضایت بیمار</label><select name='satisfaction_12m'><option></option><option>بسیار راضی</option><option>راضی</option><option>متوسط</option><option>ناراضی</option><option>بسیار ناراضی</option></select></div>
@@ -486,8 +483,7 @@
 <h3>پیگیری 24 ماه</h3>
 <div class='row'>
 <div><label>ODI / MODQ (0–100)</label><input type='number' min='0' max='100' name='odi_24m'></div>
-<div><label>NDI (0–100) — Cervical</label><input type='number' min='0' max='100' name='ndi_24m'></div>
-<div><label>mJOA (0–18) — Myelopathy</label><input type='number' min='0' max='18' name='mjoa_24m'></div>
+<div class="promPair"><div><button class="qbtn" type="button" onclick="openPromQ('ndi','ndi_24m')">NDI — پیگیری ۲۴ ماه</button><div class="out">امتیاز NDI: <b id="score_ndi_24m">—</b></div></div><div><button class="qbtn" type="button" onclick="openPromQ('mjoa','mjoa_24m')">mJOA — پیگیری ۲۴ ماه</button><div class="out">امتیاز mJOA: <b id="score_mjoa_24m">—</b></div></div></div>
 <div><label>Reoperation تا 2 سال</label><select name='reop_24m'><option></option><option>خیر</option><option>بله</option></select></div>
 </div>
 <label>شرح وضعیت/Mechanical complication در 2 سال</label><textarea name='notes_24m' rows='2'></textarea>
@@ -497,7 +493,7 @@
 <button type="button" id="saveBtn" onclick="savePatient()">ذخیره بیمار در سرور</button>
 <div id='saveStatus' class='out' style='display:none'></div><div id="patientFiles" class="out" style="margin-top:12px;display:none"></div>
 </div></form>
-<script>window.onerror=function(msg,src,line,col,err){alert('JS ERROR: '+msg+' | line: '+line+' col: '+col);};function calc(){let h=+document.getElementById('height').value/100,w=+document.getElementById('weight').value;document.getElementById('bmi').textContent=h&&w?(w/(h*h)).toFixed(1):'—';let c=[...document.querySelectorAll('.mfi')].filter(x=>x.checked).length;document.getElementById('mfic').textContent=c;document.getElementById('mfi').textContent=(c/5).toFixed(2);let q=[...document.querySelectorAll('.modq')].filter(x=>x.value!=='');let n=q.length,sum=q.reduce((a,x)=>a+(+x.value),0),score=n?100*sum/(5*n):null;document.getElementById('modq_n').textContent=n;document.getElementById('modq_score').textContent=score===null?'—':score.toFixed(1);document.getElementById('odi_hidden').value=score===null?'':score.toFixed(1)}document.addEventListener('input',calc);async function loadPatient(){
+<script>function openPromQ(type,key){window.open('/'+type+'?key='+encodeURIComponent(key),type+'_'+key,'width=760,height=850,scrollbars=yes')} window.onerror=function(msg,src,line,col,err){alert('JS ERROR: '+msg+' | line: '+line+' col: '+col);};function calc(){let h=+document.getElementById('height').value/100,w=+document.getElementById('weight').value;document.getElementById('bmi').textContent=h&&w?(w/(h*h)).toFixed(1):'—';let c=[...document.querySelectorAll('.mfi')].filter(x=>x.checked).length;document.getElementById('mfic').textContent=c;document.getElementById('mfi').textContent=(c/5).toFixed(2);let q=[...document.querySelectorAll('.modq')].filter(x=>x.value!=='');let n=q.length,sum=q.reduce((a,x)=>a+(+x.value),0),score=n?100*sum/(5*n):null;document.getElementById('modq_n').textContent=n;document.getElementById('modq_score').textContent=score===null?'—':score.toFixed(1);document.getElementById('odi_hidden').value=score===null?'':score.toFixed(1)}document.addEventListener('input',calc);async function loadPatient(){
 let f=document.getElementById('f');
 let code=(f.elements['study_id'].value||'').trim();
 let s=document.getElementById('loadStatus');
